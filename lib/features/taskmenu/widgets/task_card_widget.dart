@@ -1,4 +1,6 @@
-// ─── lib/features/task/views/widgets/task_card_widget.dart ──
+// ─── lib/features/task/views/widgets/task_card_widget.dart 
+
+// ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -35,7 +37,7 @@ class TaskCardWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Title row ──────────────────────────
+            //  Title row 
             Row(
               children: [
                 Container(
@@ -63,7 +65,7 @@ class TaskCardWidget extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            // ── Status + Priority chips ─────────────
+            //  Status + Priority chips ─────────────
             Row(
               children: [
                 _Chip(
@@ -85,7 +87,7 @@ class TaskCardWidget extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            // ── Progress bar ────────────────────────
+            //  Progress bar ────────────────────────
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: LinearProgressIndicator(
@@ -98,7 +100,7 @@ class TaskCardWidget extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            // ── Bottom row ──────────────────────────
+            //  Bottom row ──────────────────────────
             Row(
               children: [
                 _AvatarRow(count: task.memberAvatars.length),
@@ -137,7 +139,7 @@ class TaskCardWidget extends StatelessWidget {
   }
 }
 
-// ── Chip ────────────────────────────────────────────────────
+//  Chip ────────────────────────────────────────────────────
 class _Chip extends StatelessWidget {
   final String label;
   final Color textColor;
@@ -197,7 +199,7 @@ class _Chip extends StatelessWidget {
   }
 }
 
-// ── Avatar row ───────────────────────────────────────────────
+//  Avatar row ───────────────────────────────────────────────
 class _AvatarRow extends StatelessWidget {
   final int count;
   const _AvatarRow({required this.count});

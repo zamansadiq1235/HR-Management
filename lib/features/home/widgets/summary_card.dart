@@ -31,7 +31,7 @@ class SummaryCard extends StatelessWidget {
               height: 65,
               fit: BoxFit.contain,
               alignment: Alignment.centerRight,
-              errorBuilder: (_, __, ___) => const Padding(
+              errorBuilder: (_, _, _) => const Padding(
                 padding: EdgeInsets.only(right: 16),
                 child: Icon(Icons.videocam, color: Colors.white24, size: 60),
               ),

@@ -1,7 +1,12 @@
 // ─── lib/features/profile/controllers/profile_controller.dart
 
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hrmanagement/core/routes/app_routes.dart';
+import 'package:hrmanagement/core/widgets/custom_button.dart';
+import 'package:hrmanagement/features/profile/views/profile_screen.dart';
 import '../../../core/constants/app_colors.dart';
 import '../models/profile_model.dart';
 import '../views/change_password_screen.dart';
@@ -10,10 +15,10 @@ import '../views/payroll_screen.dart';
 import '../views/personal_data.dart';
 
 class ProfileController extends GetxController {
-  // ── Profile state ────────────────────────────────────────
+  //  Profile state ────────────────────────────────────────
   final profile = const ProfileModel().obs;
 
-  // ── Personal data form fields ────────────────────────────
+  //  Personal data form fields ────────────────────────────
   late final TextEditingController firstNameCtrl;
   late final TextEditingController lastNameCtrl;
   late final TextEditingController fullAddressCtrl;
@@ -24,7 +29,7 @@ class ProfileController extends GetxController {
   final selectedCity = 'Jakarta Selatan'.obs;
   final avatarPath = RxnString();
 
-  // ── Password form fields ─────────────────────────────────
+  //  Password form fields ─────────────────────────────────
   late final TextEditingController currentPasswordCtrl;
   late final TextEditingController newPasswordCtrl;
   late final TextEditingController confirmPasswordCtrl;
@@ -32,10 +37,10 @@ class ProfileController extends GetxController {
   final showNewPw = false.obs;
   final showConfirmPw = false.obs;
 
-  // ── OTP fields ───────────────────────────────────────────
+  //  OTP fields
   final otpValues = List.generate(6, (_) => '0'.obs);
 
-  // ── Options ──────────────────────────────────────────────
+  //  Options ──────────────────────────────────────────────
   final positionOptions = [
     'Junior Full Stack Developer',
     'Senior Full Stack Developer',
@@ -50,18 +55,15 @@ class ProfileController extends GetxController {
     'Jakarta Selatan',
     'Jakarta Pusat',
     'Jakarta Utara',
-    'Bandung'
+    'Bandung',
   ];
 
   @override
   void onInit() {
     super.onInit();
-    firstNameCtrl =
-        TextEditingController(text: profile.value.firstName);
-    lastNameCtrl =
-        TextEditingController(text: profile.value.lastName);
-    fullAddressCtrl =
-        TextEditingController(text: profile.value.fullAddress);
+    firstNameCtrl = TextEditingController(text: profile.value.firstName);
+    lastNameCtrl = TextEditingController(text: profile.value.lastName);
+    fullAddressCtrl = TextEditingController(text: profile.value.fullAddress);
     currentPasswordCtrl = TextEditingController();
     newPasswordCtrl = TextEditingController();
     confirmPasswordCtrl = TextEditingController();
@@ -78,13 +80,13 @@ class ProfileController extends GetxController {
     super.onClose();
   }
 
-  // ── Avatar pick (simulated) ──────────────────────────────
+  //  Avatar pick (simulated) ──────────────────────────────
   void pickAvatar() {
     // In real app: use image_picker
     avatarPath.value = 'assets/images/avatar.png';
   }
 
-  // ── Personal data update ─────────────────────────────────
+  //  Personal data update ─────────────────────────────────
   void showUpdateProfileConfirm(BuildContext context) {
     _showSheet(
       context: context,
@@ -95,7 +97,7 @@ class ProfileController extends GetxController {
       primaryLabel: 'Yes, Update Profile',
       secondaryLabel: 'No, Let me check',
       onPrimary: () {
-        Navigator.pop(context);
+        Get.back();
         _doUpdateProfile(context);
       },
       onSecondary: () => Navigator.pop(context),
@@ -123,13 +125,12 @@ class ProfileController extends GetxController {
       primaryLabel: 'View My Profile',
       showSecondary: false,
       onPrimary: () {
-        Navigator.pop(context);
         Get.back();
       },
     );
   }
 
-  // ── Password update ──────────────────────────────────────
+  //  Password update ──────────────────────────────────────
   void showUpdatePasswordConfirm(BuildContext context) {
     _showSheet(
       context: context,
@@ -140,10 +141,10 @@ class ProfileController extends GetxController {
       primaryLabel: 'Yes, Update Password',
       secondaryLabel: 'No, Let me check',
       onPrimary: () {
-        Navigator.pop(context);
+        Get.back();
         _showOtpSheet(context);
       },
-      onSecondary: () => Navigator.pop(context),
+      onSecondary: () => Get.back(),
     );
   }
 
@@ -157,36 +158,37 @@ class ProfileController extends GetxController {
   }
 
   void submitOtp(BuildContext context) {
-    Navigator.pop(context); // close otp sheet
+    Get.back(); // close otp sheet
     _showSheet(
-      context: context,
+      context: Get.context!,
       title: 'Password Updated!',
       body:
           'Congratulations! you have been updated your password successfully! you can now access your account with your new password',
       icon: Icons.bolt_rounded,
       primaryLabel: 'Yes, Update Password',
       showSecondary: false,
-      onPrimary: () {
-        Navigator.pop(context);
-        Get.back();
-      },
+      onPrimary: () => Get.to(MyProfileScreen()),
     );
   }
 
-  // ── Navigation ───────────────────────────────────────────
+  //  Navigation
   void goToPersonalData() => Get.to(() => const PersonalDataScreen());
   void goToOfficeAssets() => Get.to(() => const OfficeAssetsScreen());
   void goToPayroll() => Get.to(() => const PayrollScreen());
   void goToChangePassword() => Get.to(() => const ChangePasswordScreen());
-  void goToVersioning() =>
-      Get.snackbar('Versioning', 'App Version 1.0.0',
-          snackPosition: SnackPosition.BOTTOM);
-  void goToFaqHelp() =>
-      Get.snackbar('FAQ & Help', 'Coming soon',
-          snackPosition: SnackPosition.BOTTOM);
-  void logout() => Get.offAllNamed('/login');
+  void goToVersioning() => Get.snackbar(
+    'Versioning',
+    'App Version 1.0.0',
+    snackPosition: SnackPosition.BOTTOM,
+  );
+  void goToFaqHelp() => Get.snackbar(
+    'FAQ & Help',
+    'Coming soon',
+    snackPosition: SnackPosition.BOTTOM,
+  );
+  void logout() => Get.offAllNamed(AppRoutes.onboarding);
 
-  // ── Shared bottom sheet builder ──────────────────────────
+  //  Shared bottom sheet builder 
   void _showSheet({
     required BuildContext context,
     required String title,
@@ -217,8 +219,7 @@ class ProfileController extends GetxController {
   }
 }
 
-// ── Shared bottom sheet ──────────────────────────────────────
-
+//  Shared bottom sheet
 
 class _ProfileSheet extends StatelessWidget {
   final String title;
@@ -243,93 +244,109 @@ class _ProfileSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      padding: const EdgeInsets.fromLTRB(24, 0, 24, 36),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Center(
-            child: Container(
-              margin: const EdgeInsets.only(top: 12, bottom: 28),
-              width: 40, height: 4,
-              decoration: BoxDecoration(
-                color: const Color(0xFFE0E0E0),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.topCenter,
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
           ),
-          Container(
-            width: 76, height: 76,
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 36),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 12, bottom: 28),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE0E0E0),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                body,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 13.5,
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 28),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: CustomButton(text: primaryLabel, onPressed: onPrimary),
+              ),
+              if (showSecondary) ...[
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: OutlinedButton(
+                    onPressed: onSecondary,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.primary,
+                      side: const BorderSide(
+                        color: AppColors.primary,
+                        width: 1.4,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(28),
+                      ),
+                      textStyle: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    child: Text(secondaryLabel),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+        Positioned(
+          top: -38,
+          child: Container(
+            width: 80,
+            height: 80,
             decoration: BoxDecoration(
               color: AppColors.primary,
-              borderRadius: BorderRadius.circular(22),
+              borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.primary.withOpacity(0.35),
-                  blurRadius: 18, offset: const Offset(0, 8),
+                  blurRadius: 18,
+                  offset: const Offset(0, 8),
                 ),
               ],
             ),
             child: Icon(icon, color: Colors.white, size: 36),
           ),
-          const SizedBox(height: 20),
-          Text(title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 20, fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              )),
-          const SizedBox(height: 10),
-          Text(body,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  fontSize: 13.5, color: AppColors.textHint, height: 1.5)),
-          const SizedBox(height: 28),
-          SizedBox(
-            width: double.infinity, height: 52,
-            child: ElevatedButton(
-              onPressed: onPrimary,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(28)),
-                textStyle: const TextStyle(
-                    fontSize: 15, fontWeight: FontWeight.w600),
-              ),
-              child: Text(primaryLabel),
-            ),
-          ),
-          if (showSecondary) ...[
-            const SizedBox(height: 12),
-            SizedBox(
-              width: double.infinity, height: 52,
-              child: OutlinedButton(
-                onPressed: onSecondary,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.primary,
-                  side: const BorderSide(color: AppColors.primary, width: 1.4),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(28)),
-                  textStyle: const TextStyle(
-                      fontSize: 15, fontWeight: FontWeight.w600),
-                ),
-                child: Text(secondaryLabel),
-              ),
-            ),
-          ],
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
-// ── OTP Sheet ────────────────────────────────────────────────
+//  OTP Sheet 
 class _OtpSheet extends StatefulWidget {
   final ProfileController controller;
   const _OtpSheet({required this.controller});
@@ -339,164 +356,193 @@ class _OtpSheet extends StatefulWidget {
 }
 
 class _OtpSheetState extends State<_OtpSheet> {
-  final _controllers =
-      List.generate(6, (_) => TextEditingController(text: '0'));
+  final _controllers = List.generate(
+    6,
+    (_) => TextEditingController(text: '0'),
+  );
   final _focusNodes = List.generate(6, (_) => FocusNode());
 
   @override
   void dispose() {
-    for (final c in _controllers) c.dispose();
-    for (final f in _focusNodes) f.dispose();
+    for (final c in _controllers) {
+      c.dispose();
+    }
+    for (final f in _focusNodes) {
+      f.dispose();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      padding: EdgeInsets.fromLTRB(
-          24, 0, 24, MediaQuery.of(context).viewInsets.bottom + 36),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Center(
-            child: Container(
-              margin: const EdgeInsets.only(top: 12, bottom: 28),
-              width: 40, height: 4,
-              decoration: BoxDecoration(
-                color: const Color(0xFFE0E0E0),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.topCenter,
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
           ),
-          Container(
-            width: 76, height: 76,
-            decoration: BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.circular(22),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary.withOpacity(0.35),
-                  blurRadius: 18, offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-            child: const Icon(Icons.shield_rounded,
-                color: Colors.white, size: 36),
+          padding: EdgeInsets.fromLTRB(
+            24,
+            0,
+            24,
+            MediaQuery.of(context).viewInsets.bottom + 36,
           ),
-          const SizedBox(height: 20),
-          const Text('Forgot Password',
-              style: TextStyle(
-                fontSize: 20, fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              )),
-          const SizedBox(height: 10),
-          RichText(
-            textAlign: TextAlign.center,
-            text: const TextSpan(
-              style: TextStyle(
-                  fontSize: 13.5, color: AppColors.textHint, height: 1.5),
-              children: [
-                TextSpan(
-                    text:
-                        'A reset code has been sent to '),
-                TextSpan(
-                  text: 'Tonald@work.com',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary),
-                ),
-                TextSpan(
-                    text:
-                        ', check your email to continue the password reset process.'),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-          // OTP input row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: List.generate(6, (i) {
-              return SizedBox(
-                width: 48,
-                height: 56,
-                child: TextField(
-                  controller: _controllers[i],
-                  focusNode: _focusNodes[i],
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.number,
-                  maxLength: 1,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                  ),
-                  decoration: InputDecoration(
-                    counterText: '',
-                    contentPadding: EdgeInsets.zero,
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide:
-                          const BorderSide(color: Color(0xFFE8E8F0), width: 1.2),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                          color: AppColors.primary, width: 1.5),
-                    ),
-                  ),
-                  onChanged: (val) {
-                    if (val.isNotEmpty && i < 5) {
-                      _focusNodes[i + 1].requestFocus();
-                    }
-                  },
-                ),
-              );
-            }),
-          ),
-          const SizedBox(height: 16),
-          Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                "Haven't received the verification code? ",
-                style: TextStyle(fontSize: 12.5, color: AppColors.textHint),
-              ),
-              GestureDetector(
-                onTap: () {},
-                child: const Text(
-                  'Resend it.',
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w600,
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 12, bottom: 28),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE0E0E0),
+                    borderRadius: BorderRadius.circular(2),
                   ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Forgot Password',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 10),
+              RichText(
+                textAlign: TextAlign.center,
+                text: const TextSpan(
+                  style: TextStyle(
+                    fontSize: 13.5,
+                    color: AppColors.textSecondary,
+                    height: 1.5,
+                  ),
+                  children: [
+                    TextSpan(text: 'A reset code has been sent to '),
+                    TextSpan(
+                      text: 'Tonald@work.com',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    TextSpan(
+                      text:
+                          ', check your email to continue the password reset process.',
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              // OTP input row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(6, (i) {
+                  return SizedBox(
+                    width: 48,
+                    height: 56,
+                    child: TextField(
+                      controller: _controllers[i],
+                      focusNode: _focusNodes[i],
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                      maxLength: 1,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                      decoration: InputDecoration(
+                        counterText: '',
+                        contentPadding: EdgeInsets.zero,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(
+                            color: Color(0xFFE8E8F0),
+                            width: 1.2,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(
+                            color: AppColors.primary,
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                      onChanged: (val) {
+                        if (val.isNotEmpty && i < 5) {
+                          _focusNodes[i + 1].requestFocus();
+                        }
+                      },
+                    ),
+                  );
+                }),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  const Text(
+                    "Haven't received the verification code? ",
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {},
+                    child: const Text(
+                      'Resend it.',
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: CustomButton(
+                  text: 'Submit',
+                  onPressed: () => widget.controller.submitOtp(context),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 24),
-          SizedBox(
-            width: double.infinity, height: 52,
-            child: ElevatedButton(
-              onPressed: () =>
-                  widget.controller.submitOtp(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(28)),
-                textStyle: const TextStyle(
-                    fontSize: 15, fontWeight: FontWeight.w600),
-              ),
-              child: const Text('Submit'),
+        ),
+        Positioned(
+          top: -38,
+          child: Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(0.35),
+                  blurRadius: 18,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: const Icon(
+              Icons.shield_rounded,
+              color: Colors.white,
+              size: 36,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

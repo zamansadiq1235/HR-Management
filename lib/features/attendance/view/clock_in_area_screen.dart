@@ -1,5 +1,7 @@
 // ─── lib/features/attendance/screens/clock_in_area_screen.dart
 
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hrmanagement/core/widgets/custom_button.dart';

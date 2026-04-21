@@ -1,5 +1,7 @@
 // ─── lib/features/attendance/widgets/attendance_card.dart ────
 
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../core/constants/app_assets.dart';

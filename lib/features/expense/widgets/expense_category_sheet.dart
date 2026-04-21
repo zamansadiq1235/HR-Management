@@ -100,6 +100,7 @@ class _ExpenseCategorySheetState extends State<ExpenseCategorySheet> {
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
               itemCount: widget.options.length,
+              // ignore: unnecessary_underscores
               separatorBuilder: (_, __) => const SizedBox(height: 10),
               itemBuilder: (_, i) {
                 final option = widget.options[i];

@@ -1,5 +1,7 @@
 // ─── lib/views/leave_summary_screen.dart ───────────────────
 
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/constants/app_colors.dart';
@@ -67,7 +69,7 @@ class LeaveSummaryScreen extends StatelessWidget {
     );
   }
 
-  // ── Purple Header ───────────────────────────────────────
+  //  Purple Header ───────────────────────────────────────
   Widget _buildHeader() {
     return SafeArea(
       bottom: false,
@@ -128,7 +130,7 @@ class LeaveSummaryScreen extends StatelessWidget {
     );
   }
 
-  // ── Leave Balance Card ──────────────────────────────────
+  //  Leave Balance Card 
   Widget _buildLeaveBalanceCard() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
@@ -197,7 +199,7 @@ class LeaveSummaryScreen extends StatelessWidget {
     );
   }
 
-  // ── Tab Bar ─────────────────────────────────────────────
+  //  Tab Bar ─────────────────────────────────────────────
   Widget _buildTabBar() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -283,7 +285,7 @@ class LeaveSummaryScreen extends StatelessWidget {
     );
   }
 
-  // ── Leave List ──────────────────────────────────────────
+  //  Leave List ──────────────────────────────────────────
   Widget _buildLeaveList() {
     return Obx(() {
       final records = _c.filteredRecords;

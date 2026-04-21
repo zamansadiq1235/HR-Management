@@ -1,5 +1,7 @@
 // ─── lib/features/expense/views/widgets/expense_tab_bar.dart
 
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/constants/app_colors.dart';

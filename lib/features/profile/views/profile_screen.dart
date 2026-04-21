@@ -1,5 +1,7 @@
 // ─── lib/features/profile/screens/profile_screen.dart ───────
 
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/constants/app_colors.dart';
@@ -13,7 +15,7 @@ class MyProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+      backgroundColor: AppColors.background,
       body: Stack(
         children: [
           //  Purple header background ─────────
@@ -65,56 +67,58 @@ class MyProfileScreen extends StatelessWidget {
                 ),
 
                 // Avatar
-                const SizedBox(height: 16),
+                const SizedBox(height: 60),
                 Obx(
                   () => _ProfileAvatar(
                     avatarPath:
                         _c.avatarPath.value ?? _c.profile.value.avatarPath,
                   ),
                 ),
+                const SizedBox(height: 14),
+                // Name + role
+                Obx(
+                  () => Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            _c.profile.value.fullName,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          const Icon(
+                            Icons.verified_rounded,
+                            color: AppColors.primary,
+                            size: 18,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        _c.profile.value.position,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
 
                 // Scrollable content
                 Expanded(
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+                    padding: const EdgeInsets.fromLTRB(16, 6, 16, 20),
                     child: Column(
                       children: [
-                        // Name + role
-                        Obx(
-                          () => Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    _c.profile.value.fullName,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w800,
-                                      color: AppColors.textPrimary,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 6),
-                                  const Icon(
-                                    Icons.verified_rounded,
-                                    color: AppColors.primary,
-                                    size: 18,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                _c.profile.value.position,
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                         const SizedBox(height: 24),
 
                         // CONTACT section
@@ -129,7 +133,7 @@ class MyProfileScreen extends StatelessWidget {
                                 showDivider: true,
                               ),
                               _InfoRow(
-                                icon: Icons.verified_rounded,
+                                icon: Icons.location_on,
                                 text: _c.profile.value.address,
                                 showDivider: false,
                               ),
@@ -218,11 +222,11 @@ class _ProfileAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 100,
-      height: 100,
+      width: 110,
+      height: 110,
       decoration: BoxDecoration(
         color: const Color(0xFFEEEBFF),
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white, width: 3),
         boxShadow: [
           BoxShadow(
@@ -233,7 +237,7 @@ class _ProfileAvatar extends StatelessWidget {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(19),
+        borderRadius: BorderRadius.circular(20),
         child: avatarPath != null
             ? Image.asset(
                 avatarPath!,
@@ -253,7 +257,7 @@ class _AvatarPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: const Color(0xFFEEEBFF),
-      child: Image.asset('assets/images/Ellipse2.png', fit: BoxFit.contain),
+      child: Image.asset('assets/images/Ellipse2.png', fit: BoxFit.cover),
     );
   }
 }
@@ -270,9 +274,9 @@ class _SectionLabel extends StatelessWidget {
       child: Text(
         text,
         style: const TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          color: AppColors.textHint,
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textSecondary,
           letterSpacing: 0.8,
         ),
       ),
@@ -289,7 +293,7 @@ class _MenuCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.backsurface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -321,37 +325,22 @@ class _InfoRow extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
           child: Row(
             children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: AppColors.primarySurface,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(icon, color: AppColors.primary, size: 16),
-              ),
+              Icon(icon, color: AppColors.primary, size: 22),
               const SizedBox(width: 12),
               Text(
                 text,
                 style: const TextStyle(
                   fontSize: 13.5,
                   color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ],
           ),
         ),
-        if (showDivider)
-          const Divider(
-            height: 1,
-            indent: 16,
-            endIndent: 16,
-            color: Color(0xFFF0F0F5),
-          ),
       ],
     );
   }
@@ -384,15 +373,7 @@ class _MenuRow extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
             child: Row(
               children: [
-                Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(icon, color: color, size: 16),
-                ),
+                Icon(icon, color: color, size: 22),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -407,19 +388,12 @@ class _MenuRow extends StatelessWidget {
                 const Icon(
                   Icons.chevron_right_rounded,
                   color: AppColors.textHint,
-                  size: 20,
+                  size: 22,
                 ),
               ],
             ),
           ),
         ),
-        if (showDivider)
-          const Divider(
-            height: 1,
-            indent: 16,
-            endIndent: 16,
-            color: Color(0xFFF0F0F5),
-          ),
       ],
     );
   }

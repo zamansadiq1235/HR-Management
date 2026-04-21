@@ -65,7 +65,7 @@ class _SelectionBottomSheetState extends State<SelectionBottomSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Handle bar ─────────────────────────
+          //  Handle bar ─────────────────────────
           Center(
             child: Container(
               margin: const EdgeInsets.only(top: 12),
@@ -78,7 +78,7 @@ class _SelectionBottomSheetState extends State<SelectionBottomSheet> {
             ),
           ),
 
-          // ── Header ─────────────────────────────
+          //  Header ─────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 6),
             child: Column(
@@ -107,7 +107,7 @@ class _SelectionBottomSheetState extends State<SelectionBottomSheet> {
 
           const SizedBox(height: 12),
 
-          // ── Options list ────────────────────────
+          //  Options list ────────────────────────
           ConstrainedBox(
             constraints: BoxConstraints(
               maxHeight: MediaQuery.of(context).size.height * 0.5,
@@ -117,6 +117,7 @@ class _SelectionBottomSheetState extends State<SelectionBottomSheet> {
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
               itemCount: widget.options.length,
+              // ignore: unnecessary_underscores
               separatorBuilder: (_, __) => const SizedBox(height: 10),
               itemBuilder: (_, i) {
                 final option = widget.options[i];
@@ -132,7 +133,7 @@ class _SelectionBottomSheetState extends State<SelectionBottomSheet> {
 
           const SizedBox(height: 20),
 
-          // ── Buttons ─────────────────────────────
+          //  Buttons 
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
             child: Row(
@@ -193,7 +194,7 @@ class _SelectionBottomSheetState extends State<SelectionBottomSheet> {
   }
 }
 
-// ── Option Tile ──────────────────────────────────────────────
+//  Option Tile ──────────────────────────────────────────────
 class _OptionTile extends StatelessWidget {
   final String label;
   final bool isSelected;

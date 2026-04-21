@@ -179,26 +179,26 @@ class AppPages {
     ),
     // profile screens
 
-    //     GetPage(
-    //   name: '/profile',
-    //   page: () => MyProfileScreen(),
-    //   binding: ProfileBinding(),
-    // ),
-    //  GetPage(
-    //   name: '/personal-data',
-    //   page: () => const PersonalDataScreen(),
-    // ),
-    // GetPage(
-    //   name: '/office-assets',
-    //   page: () => const OfficeAssetsScreen(),
-    // ),
-    // GetPage(
-    //   name: '/payroll',
-    //   page: () => const PayrollScreen(),
-    // ),
-    // GetPage(
-    //   name: '/change-password',
-    //   page: () => const ChangePasswordScreen(),
-    // ),
+        GetPage(
+      name: '/profile',
+      page: () => MyProfileScreen(),
+      binding: ProfileBinding(),
+    ),
+     GetPage(
+      name: '/personal-data',
+      page: () => const PersonalDataScreen(),
+    ),
+    GetPage(
+      name: '/office-assets',
+      page: () => const OfficeAssetsScreen(),
+    ),
+    GetPage(
+      name: '/payroll',
+      page: () => const PayrollScreen(),
+    ),
+    GetPage(
+      name: '/change-password',
+      page: () => const ChangePasswordScreen(),
+    ),
   ];
 }

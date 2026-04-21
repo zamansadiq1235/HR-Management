@@ -104,7 +104,7 @@ class _TaskSelectionSheetState extends State<TaskSelectionSheet> {
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
               itemCount: widget.options.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 10),
+              separatorBuilder: (_, _) => const SizedBox(height: 10),
               itemBuilder: (_, i) {
                 final opt = widget.options[i];
                 final isSel = _selected == opt;

@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/constants/app_colors.dart'; // Adjust your path
@@ -23,14 +25,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       centerTitle: true,
       automaticallyImplyLeading: false, // Prevents default back button
-      leading: showBackButton 
+      leading: showBackButton
           ? GestureDetector(
               onTap: onBack ?? () => Get.back(),
               child: Container(
-                margin: const EdgeInsets.all(10),
+                margin: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: AppColors.primarySurface,
-                  borderRadius: BorderRadius.circular(10),
+                  shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.chevron_left_rounded,

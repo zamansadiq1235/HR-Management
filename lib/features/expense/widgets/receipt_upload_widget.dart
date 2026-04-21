@@ -1,6 +1,6 @@
 // ─── lib/features/expense/views/widgets/receipt_upload_widget.dart
 
-// ignore_for_file: unused_element
+// ignore_for_file: deprecated_member_use, unused_element
 
 import 'dart:io';
 

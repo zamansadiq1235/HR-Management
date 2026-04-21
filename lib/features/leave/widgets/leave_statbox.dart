@@ -1,7 +1,5 @@
 // ignore_for_file: use_key_in_widget_constructors
 
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hrmanagement/core/constants/app_text_styles.dart';

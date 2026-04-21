@@ -1,91 +1,24 @@
-// ─── lib/features/task/views/widgets/task_confirm_sheet.dart
-
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:hrmanagement/core/constants/app_assets.dart';
-import 'package:hrmanagement/core/widgets/custom_button.dart';
-import '../../../../core/constants/app_colors.dart';
 
-class TaskConfirmSheet extends StatelessWidget {
-  final VoidCallback onConfirm;
-  const TaskConfirmSheet({super.key, required this.onConfirm});
+import '../../../core/constants/app_colors.dart';
+import '../../../core/widgets/custom_button.dart';
 
-  static Future<void> show({
-    required BuildContext context,
-    required VoidCallback onConfirm,
-  }) {
-    return showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => TaskConfirmSheet(onConfirm: onConfirm),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _TaskSheet(
-      title: 'Create New Task',
-      body:
-          'Double-check your task details to ensure everything is correct. Do you want to proceed?',
-      primaryLabel: 'Yes, Proceed Now',
-      secondaryLabel: 'No, Let me check',
-      onPrimary: () {
-        Navigator.pop(context);
-        onConfirm();
-      },
-      onSecondary: () => Navigator.pop(context),
-    );
-  }
-}
-
-// ─── lib/features/task/views/widgets/task_success_sheet.dart
-
-class TaskSuccessSheet extends StatelessWidget {
-  final VoidCallback onViewTasks;
-  const TaskSuccessSheet({super.key, required this.onViewTasks});
-
-  static Future<void> show({
-    required BuildContext context,
-    required VoidCallback onViewTasks,
-  }) {
-    return showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      isDismissible: false,
-      backgroundColor: Colors.transparent,
-      builder: (_) => TaskSuccessSheet(onViewTasks: onViewTasks),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _TaskSheet(
-      title: 'Task Has Been Created!',
-      body:
-          'Congratulations! Task has been created! view your task in the task management',
-      primaryLabel: 'View Task Management',
-      onPrimary: onViewTasks,
-      showSecondary: false,
-    );
-  }
-}
-
-// ── Shared sheet layout ──────────────────────────────────────
-class _TaskSheet extends StatelessWidget {
+class ProfileSheet extends StatelessWidget {
   final String title;
   final String body;
+  final IconData icon;
   final String primaryLabel;
   final String secondaryLabel;
   final VoidCallback onPrimary;
   final VoidCallback? onSecondary;
   final bool showSecondary;
 
-  const _TaskSheet({
+  const ProfileSheet({super.key, 
     required this.title,
     required this.body,
+    required this.icon,
     required this.primaryLabel,
     this.secondaryLabel = 'No, Let me check',
     required this.onPrimary,
@@ -104,7 +37,7 @@ class _TaskSheet extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
           ),
-          padding: const EdgeInsets.fromLTRB(24, 0, 24, 30),
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 36),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -119,8 +52,7 @@ class _TaskSheet extends StatelessWidget {
                   ),
                 ),
               ),
-              // Icon badge
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               Text(
                 title,
                 textAlign: TextAlign.center,
@@ -136,7 +68,7 @@ class _TaskSheet extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 13.5,
-                  color: AppColors.textHint,
+                  color: AppColors.textSecondary,
                   height: 1.5,
                 ),
               ),
@@ -174,7 +106,6 @@ class _TaskSheet extends StatelessWidget {
             ],
           ),
         ),
-
         Positioned(
           top: -38,
           child: Container(
@@ -182,7 +113,7 @@ class _TaskSheet extends StatelessWidget {
             height: 80,
             decoration: BoxDecoration(
               color: AppColors.primary,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.primary.withOpacity(0.35),
@@ -191,10 +122,7 @@ class _TaskSheet extends StatelessWidget {
                 ),
               ],
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: SvgPicture.asset(AppAssets.notetext1),
-            ),
+            child: Icon(icon, color: Colors.white, size: 36),
           ),
         ),
       ],
