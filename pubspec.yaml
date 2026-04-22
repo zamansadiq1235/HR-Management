@@ -46,10 +46,23 @@ dependencies:
   intl_phone_field:
   image_picker:
   file_picker: 
+  flutter_secure_storage:
+  flutter_launcher_icons:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons/hr-icon.png"
+  min_sdk_android: 24 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "assets/images/hr-icon.png"
+    background_color: "#6B4EFF"
+    theme_color: "#F0ECFF"    
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

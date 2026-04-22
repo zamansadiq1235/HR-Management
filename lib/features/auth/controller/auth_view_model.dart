@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/routes/app_routes.dart';
+import '../../../data/services/storage_services.dart';
 
 enum SignInMethod { email, employeeId, phone }
 
@@ -35,6 +36,34 @@ class AuthViewModel extends GetxController {
   final passwordVisible = false.obs;
   final signUpPasswordVisible = false.obs;
   final signUpConfirmPasswordVisible = false.obs;
+
+  final storage = StorageService();
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    // 🔥 Load saved data
+    rememberMe.value = storage.rememberMe;
+
+    if (rememberMe.value) {
+      emailController.text = storage.email;
+      employeeIdController.text = storage.employeeId;
+    }
+  }
+
+  void submitSignIn() {
+    if (rememberMe.value) {
+      storage.saveEmail(emailController.text);
+      storage.saveEmployeeId(employeeIdController.text);
+    } else {
+      storage.clearRememberData();
+    }
+
+    // continue login
+    storage.setLoggedIn(true);
+    Get.offAllNamed(AppRoutes.navBar);
+  }
 
   void setSignInMethod(SignInMethod method) {
     signInMethod.value = method;
@@ -120,28 +149,6 @@ class AuthViewModel extends GetxController {
     }
     return null;
   }
-
-  void submitSignIn() {
-    if (signInMethod.value == SignInMethod.phone) {
-      Get.toNamed(AppRoutes.phoneVerification);
-      return;
-    }
-
-    Get.offNamed(AppRoutes.navBar);
-  }
-
-  // void submitSignUp() {
-  //   if (!acceptTerms.value) {
-  //     Get.snackbar('Terms required', 'Please accept terms and privacy policy');
-  //     return;
-  //   }
-
-  //   for (final ctrl in otpControllers) {
-  //     ctrl.clear();
-  //   }
-  //   otp.value = '';
-  //   Get.offNamed(AppRoutes.emailVerification);
-  // }
 
   void submitPhoneVerification() {
     final allFilled = otpControllers.every(

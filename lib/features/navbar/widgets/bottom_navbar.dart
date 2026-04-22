@@ -53,12 +53,12 @@ class BottomNavbar extends StatelessWidget {
                       child: isActive ? activeicons[index] : icons[index],
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 4),
 
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     height: 3,
-                    width: isActive ? 20 : 0,
+                    width: isActive ? 18 : 0,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
@@ -72,14 +72,4 @@ class BottomNavbar extends StatelessWidget {
       ),
     );
   }
-
-  // Widget _buildIcon(String asset, bool isActive) {
-  //   return SvgPicture.asset(
-  //     asset,
-  //     colorFilter: ColorFilter.mode(
-  //       isActive ? Colors.white : Colors.grey,
-  //       BlendMode.srcIn,
-  //     ),
-  //   );
-  // }
 }

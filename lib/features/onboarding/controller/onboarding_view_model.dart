@@ -3,11 +3,16 @@ import 'package:get/get.dart';
 import 'package:hrmanagement/core/constants/app_assets.dart';
 import '../../../data/models/onboarding_info.dart';
 import '../../../core/routes/app_routes.dart';
+import '../../../data/services/storage_services.dart';
 
 class OnboardingViewModel extends GetxController {
   var selectedPageIndex = 0.obs;
+
   bool get isLastPage => selectedPageIndex.value == onboardingPages.length - 1;
-  var pageController = PageController();
+
+  final pageController = PageController();
+
+  final _storage = StorageService();
 
   List<OnboardingInfo> onboardingPages = [
     OnboardingInfo(
@@ -40,11 +45,13 @@ class OnboardingViewModel extends GetxController {
     ),
   ];
 
+  // 🔥 NEXT BUTTON
   void forwardAction() {
     if (isLastPage) {
-      Get.offNamed(
-        AppRoutes.home,
-      ); // Assuming Home is the next route after login/signup
+      _storage.setOnboardingDone();
+
+      // go to login (NOT home directly)
+      Get.offAllNamed(AppRoutes.signIn);
     } else {
       pageController.nextPage(
         duration: const Duration(milliseconds: 300),
@@ -53,6 +60,7 @@ class OnboardingViewModel extends GetxController {
     }
   }
 
+  // 🔥 SKIP
   void skipAction() {
     pageController.animateToPage(
       onboardingPages.length - 1,
@@ -62,10 +70,18 @@ class OnboardingViewModel extends GetxController {
   }
 
   void navigateToSignIn() {
-    Get.offNamed(AppRoutes.signIn);
+    _storage.setOnboardingDone(); // optional but recommended
+    Get.offAllNamed(AppRoutes.signIn);
   }
 
   void navigateToSignUp() {
-    Get.offNamed(AppRoutes.signUp);
+    _storage.setOnboardingDone();
+    Get.offAllNamed(AppRoutes.signUp);
+  }
+
+  @override
+  void onClose() {
+    pageController.dispose();
+    super.onClose();
   }
 }

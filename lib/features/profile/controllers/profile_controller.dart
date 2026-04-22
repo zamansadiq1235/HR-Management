@@ -8,6 +8,7 @@ import 'package:hrmanagement/core/routes/app_routes.dart';
 import 'package:hrmanagement/core/widgets/custom_button.dart';
 import 'package:hrmanagement/features/profile/views/profile_screen.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../data/services/storage_services.dart';
 import '../models/profile_model.dart';
 import '../views/change_password_screen.dart';
 import '../views/office_assets.dart';
@@ -15,10 +16,11 @@ import '../views/payroll_screen.dart';
 import '../views/personal_data.dart';
 
 class ProfileController extends GetxController {
-  //  Profile state ────────────────────────────────────────
+  final storage = StorageService();
+  //  Profile state
   final profile = const ProfileModel().obs;
 
-  //  Personal data form fields ────────────────────────────
+  //  Personal data form fields
   late final TextEditingController firstNameCtrl;
   late final TextEditingController lastNameCtrl;
   late final TextEditingController fullAddressCtrl;
@@ -29,7 +31,7 @@ class ProfileController extends GetxController {
   final selectedCity = 'Jakarta Selatan'.obs;
   final avatarPath = RxnString();
 
-  //  Password form fields ─────────────────────────────────
+  //  Password form fields
   late final TextEditingController currentPasswordCtrl;
   late final TextEditingController newPasswordCtrl;
   late final TextEditingController confirmPasswordCtrl;
@@ -40,7 +42,7 @@ class ProfileController extends GetxController {
   //  OTP fields
   final otpValues = List.generate(6, (_) => '0'.obs);
 
-  //  Options ──────────────────────────────────────────────
+  //  Options
   final positionOptions = [
     'Junior Full Stack Developer',
     'Senior Full Stack Developer',
@@ -186,9 +188,25 @@ class ProfileController extends GetxController {
     'Coming soon',
     snackPosition: SnackPosition.BOTTOM,
   );
-  void logout() => Get.offAllNamed(AppRoutes.onboarding);
+  void logout() {
+    Get.defaultDialog(
+      titlePadding: EdgeInsets.only(top: 12),
+      contentPadding: EdgeInsets.all(5),
+      title: "Logout",
+      middleText: "Are you sure you want to log out?",
+      textConfirm: "Yes",
+      textCancel: "No",
+      confirmTextColor: Colors.white,
+      buttonColor: AppColors.primary,
+      onConfirm: () {
+        // Execute original logout logic
+        storage.logout();
+        Get.offAllNamed(AppRoutes.onboarding);
+      },
+    );
+  }
 
-  //  Shared bottom sheet builder 
+  //  Shared bottom sheet builder
   void _showSheet({
     required BuildContext context,
     required String title,
@@ -346,7 +364,7 @@ class _ProfileSheet extends StatelessWidget {
   }
 }
 
-//  OTP Sheet 
+//  OTP Sheet
 class _OtpSheet extends StatefulWidget {
   final ProfileController controller;
   const _OtpSheet({required this.controller});
