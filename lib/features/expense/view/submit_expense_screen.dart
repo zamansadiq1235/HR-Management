@@ -126,12 +126,12 @@ class SubmitExpenseScreen extends StatelessWidget {
           margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: AppColors.primarySurface,
-            borderRadius: BorderRadius.circular(10),
+            shape: BoxShape.circle,
           ),
           child: const Icon(
             Icons.chevron_left_rounded,
             color: AppColors.primary,
-            size: 22,
+            size: 23,
           ),
         ),
       ),
@@ -197,7 +197,6 @@ class _PromoBanner extends StatelessWidget {
           fit: BoxFit.cover,
         ),
       ),
-      
     );
   }
 }

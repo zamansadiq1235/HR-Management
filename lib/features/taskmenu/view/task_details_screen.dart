@@ -107,7 +107,7 @@ class TaskDetailScreen extends StatelessWidget {
                   'Created ${task.createdDate}',
                   style: const TextStyle(
                     fontSize: 11.5,
-                    color: AppColors.textHint,
+                    color: AppColors.textPrimary,
                   ),
                 ),
               ),
@@ -222,7 +222,7 @@ class TaskDetailScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textHint,
+                          color: AppColors.textPrimary,
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -241,11 +241,12 @@ class TaskDetailScreen extends StatelessWidget {
 
               // ── Priority & Difficulty ─────────────
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 14),
                 child: Row(
                   children: [
                     // Priority
                     Expanded(
+                      flex: 2,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -254,18 +255,18 @@ class TaskDetailScreen extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.textHint,
+                              color: AppColors.textPrimary,
                             ),
                           ),
                           const SizedBox(height: 6),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
+                              horizontal: 13,
                               vertical: 5,
                             ),
                             decoration: BoxDecoration(
                               color: _red,
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(18),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -292,6 +293,7 @@ class TaskDetailScreen extends StatelessWidget {
                     ),
                     // Difficulty
                     Expanded(
+                      flex: 3,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -300,7 +302,7 @@ class TaskDetailScreen extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.textHint,
+                              color: AppColors.textPrimary,
                             ),
                           ),
                           const SizedBox(height: 6),
@@ -310,8 +312,9 @@ class TaskDetailScreen extends StatelessWidget {
                                 _getDifficultyEmoji(task.difficulty.label),
                                 style: const TextStyle(fontSize: 18),
                               ),
-                              const SizedBox(width: 6),
+                              const SizedBox(width: 3),
                               Expanded(
+                                flex: 2,
                                 child: Text(
                                   task.difficulty.label,
                                   style: const TextStyle(
@@ -341,7 +344,7 @@ class TaskDetailScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textHint,
+                        color: AppColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -400,7 +403,7 @@ class TaskDetailScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textHint,
+                        color: AppColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -438,7 +441,7 @@ class TaskDetailScreen extends StatelessWidget {
                                 hintText: 'Write a comment...',
                                 hintStyle: TextStyle(
                                   fontSize: 13,
-                                  color: AppColors.textHint,
+                                  color: AppColors.textPrimary,
                                 ),
                                 contentPadding: EdgeInsets.symmetric(
                                   horizontal: 16,
@@ -507,7 +510,7 @@ class TaskDetailScreen extends StatelessWidget {
                   Text(
                     time,
                     style: const TextStyle(
-                      color: AppColors.textHint,
+                      color: AppColors.textPrimary,
                       fontSize: 11,
                     ),
                   ),

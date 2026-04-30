@@ -99,7 +99,8 @@ class SubmitLeaveScreen extends StatelessWidget {
               const SizedBox(height: 8),
               DescriptionField(
                 hint: 'Enter Leave Description',
-                controller: _c.descriptionController),
+                controller: _c.descriptionController,
+              ),
             ],
           ),
         ),
@@ -119,12 +120,12 @@ class SubmitLeaveScreen extends StatelessWidget {
           margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: AppColors.primarySurface,
-            borderRadius: BorderRadius.circular(10),
+            shape: BoxShape.circle,
           ),
           child: const Icon(
             Icons.chevron_left_rounded,
             color: AppColors.primary,
-            size: 22,
+            size: 25,
           ),
         ),
       ),

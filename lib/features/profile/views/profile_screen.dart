@@ -47,7 +47,7 @@ class MyProfileScreen extends StatelessWidget {
                           child: const Icon(
                             Icons.chevron_left_rounded,
                             color: AppColors.primary,
-                            size: 22,
+                            size: 25,
                           ),
                         ),
                       ),

@@ -57,7 +57,8 @@ class PersonalDataScreen extends StatelessWidget {
                         clipBehavior: Clip.none,
                         children: [
                           Obx(() {
-                            final path = (c.avatarPath.value?.isNotEmpty ?? false)
+                            final path =
+                                (c.avatarPath.value?.isNotEmpty ?? false)
                                 ? c.avatarPath.value
                                 : c.profile.value.avatarPath;
 
@@ -312,6 +313,7 @@ class PersonalDataScreen extends StatelessWidget {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
+      surfaceTintColor: Colors.transparent,
       centerTitle: true,
       leading: GestureDetector(
         onTap: () => Get.back(),
@@ -319,12 +321,12 @@ class PersonalDataScreen extends StatelessWidget {
           margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: AppColors.primarySurface,
-            borderRadius: BorderRadius.circular(10),
+            shape: BoxShape.circle,
           ),
           child: const Icon(
             Icons.chevron_left_rounded,
             color: AppColors.primary,
-            size: 22,
+            size: 25,
           ),
         ),
       ),
