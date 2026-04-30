@@ -112,7 +112,7 @@ class ExpenseConfirmSheet extends StatelessWidget {
           ),
         ),
         Positioned(
-          top: -32,
+          top: -38,
           child: Container(
             width: 80,
             height: 80,

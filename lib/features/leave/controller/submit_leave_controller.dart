@@ -41,8 +41,6 @@ class SubmitLeaveController extends GetxController {
     'Option 4',
   ];
 
-  final countryCodes = ['INA', 'USA', 'SGP', 'MYS', 'PK'];
-
   //  Computed
   String get durationLabel {
     if (selectedStartDate.value == null || selectedEndDate.value == null) {
@@ -55,7 +53,9 @@ class SubmitLeaveController extends GetxController {
       selectedCategory.value != null &&
       selectedStartDate.value != null &&
       selectedEndDate.value != null &&
-      selectedDelegation.value != null;
+      selectedDelegation.value != null &&
+      descriptionController.text.isNotEmpty &&
+      phoneController.text.isNotEmpty;
 
   //  Pickers ──────────────────────────────────────────────
   Future<void> openCategorySheet(BuildContext context) async {

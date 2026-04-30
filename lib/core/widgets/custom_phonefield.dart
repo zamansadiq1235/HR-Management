@@ -1,24 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
-import '../../features/auth/controller/auth_view_model.dart';
+import '../constants/app_colors.dart';
 
 class CustomPhonefield extends StatelessWidget {
-  const CustomPhonefield({super.key});
+  final TextEditingController? controller;
+  final String? label;
+  const CustomPhonefield({
+    super.key,
+    required this.controller,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<AuthViewModel>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Phone Number', style: Theme.of(context).textTheme.bodyMedium),
+        Text(
+          label!,
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: AppColors.textSecondary),
+        ),
         SizedBox(height: 5),
         IntlPhoneField(
           disableLengthCheck: true,
           keyboardType: TextInputType.phone,
-          controller: controller.phoneController,
+          controller: controller,
           decoration: InputDecoration(
             hintText: '820000 0000',
             hintStyle: Theme.of(

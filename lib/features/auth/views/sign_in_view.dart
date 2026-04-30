@@ -149,7 +149,10 @@ class SignInView extends GetView<AuthViewModel> {
                             SizedBox(height: 16.h),
                           ],
                           if (selected == SignInMethod.phone) ...[
-                            CustomPhonefield(),
+                            CustomPhonefield(
+                              label: 'Phone Number',
+                              controller: controller.phoneController,
+                            ),
                             SizedBox(height: 16.h),
                           ],
                           if (selected != SignInMethod.phone) ...[

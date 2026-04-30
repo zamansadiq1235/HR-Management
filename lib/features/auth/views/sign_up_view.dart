@@ -100,7 +100,10 @@ class SignUpView extends GetView<AuthViewModel> {
                       keyboardType: TextInputType.emailAddress,
                     ),
                     SizedBox(height: 16.h),
-                    CustomPhonefield(),
+                    CustomPhonefield(
+                      label: 'Phone Number',
+                      controller: controller.signUpPhoneController,
+                    ),
                     SizedBox(height: 16.h),
                     CustomTextfield(
                       label: 'Company ID',

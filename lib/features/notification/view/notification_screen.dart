@@ -35,31 +35,66 @@ class NotificationScreen extends StatelessWidget {
             ),
           ),
         ),
-        title: const Text(
-          "Notifications",
-          style: TextStyle(
-            color: Color(0xFF1E212C),
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+        title: Obx(
+          () => Text(
+            controller.isSelectionMode.value
+                ? '${controller.selectedIndices.length} Selected'
+                : 'Notifications',
+            style: const TextStyle(color: Colors.black),
           ),
         ),
+        actions: [
+          Obx(
+            () => controller.isSelectionMode.value
+                ? IconButton(
+                    icon: const Icon(Icons.delete_outline, color: Colors.red),
+                    onPressed: () => _showDeleteDialog(context),
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ],
       ),
-      body: Obx(() {
-        return ListView.separated(
+      body: Obx(
+        () => ListView.builder(
           itemCount: controller.notifications.length,
-          separatorBuilder: (context, index) =>
-              const Divider(height: 1, thickness: 1, color: Color(0xFFF1F1F1)),
           itemBuilder: (context, index) {
-            final item = controller.notifications[index];
             return NotificationTile(
-              notification: item,
-              onDelete: () {
-                controller.deletenotifi(index);
+              notification: controller.notifications[index],
+              isSelected: controller.selectedIndices.contains(index),
+              isSelectionMode: controller.isSelectionMode.value,
+              onDelete: () => controller.deletenotifi(index),
+              onLongPress: () => controller.toggleSelection(index),
+              onTap: () {
+                if (controller.isSelectionMode.value) {
+                  controller.toggleSelection(index);
+                }
               },
             );
           },
-        );
-      }),
+        ),
+      ),
+      // Delete Button appears only when items are selected
+    );
+  }
+
+  void _showDeleteDialog(BuildContext context) {
+    Get.dialog(
+      AlertDialog(
+        title: const Text("Delete Notifications"),
+        content: Text(
+          "Are you sure you want to delete ${controller.selectedIndices.length} notifications?",
+        ),
+        actions: [
+          TextButton(onPressed: () => Get.back(), child: const Text("Cancel")),
+          TextButton(
+            onPressed: () {
+              controller.deleteSelected();
+              Get.back();
+            },
+            child: const Text("Delete", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
     );
   }
 }

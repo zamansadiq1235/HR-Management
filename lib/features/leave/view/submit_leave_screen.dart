@@ -5,11 +5,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/widgets/custom_phonefield.dart';
 import '../controller/submit_leave_controller.dart';
 import '../widgets/leave_date_field.dart';
 import '../widgets/leave_description_field.dart';
 import '../widgets/leave_dropdown_field.dart';
-import '../widgets/leave_phone_field.dart';
 
 class SubmitLeaveScreen extends StatelessWidget {
   SubmitLeaveScreen({super.key});
@@ -51,7 +51,7 @@ class SubmitLeaveScreen extends StatelessWidget {
               const SizedBox(height: 2),
               const Text(
                 'Information about leave details',
-                style: TextStyle(fontSize: 12, color: AppColors.textHint),
+                style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
               ),
               const SizedBox(height: 24),
 
@@ -90,9 +90,10 @@ class SubmitLeaveScreen extends StatelessWidget {
               ),
               const SizedBox(height: 18),
 
-              _Label('Emergency Contact During Leave Period'),
-              const SizedBox(height: 8),
-              LeavePhoneField(controller: _c),
+              CustomPhonefield(
+                label: 'Emergency Contact During Leave Period',
+                controller: _c.phoneController,
+              ),
               const SizedBox(height: 18),
 
               _Label('Leave Description'),
@@ -186,7 +187,7 @@ class _Label extends StatelessWidget {
       style: const TextStyle(
         fontSize: 12.5,
         fontWeight: FontWeight.w500,
-        color: AppColors.textHint,
+        color: AppColors.textSecondary,
       ),
     );
   }

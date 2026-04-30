@@ -53,12 +53,12 @@ class CreateTaskScreen extends StatelessWidget {
               const SizedBox(height: 2),
               const Text(
                 'Format should be in .pdf .jpeg .png less than 5MB',
-                style: TextStyle(fontSize: 12, color: AppColors.textHint),
+                style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
               ),
               const SizedBox(height: 14),
               _AttachmentRow(controller: _c),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
 
               /// ── Title
               const SizedBox(height: 8),
@@ -223,7 +223,7 @@ class _AttachmentRow extends StatelessWidget {
           final slot = controller.slots[i];
           return Expanded(
             child: Padding(
-              padding: EdgeInsets.only(right: i < 2 ? 10 : 0),
+              padding: EdgeInsets.all(5),
               child: _AttachmentSlotWidget(
                 slot: slot,
                 onTap: () => controller.pickAttachment(i),
