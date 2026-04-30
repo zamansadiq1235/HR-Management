@@ -6,18 +6,19 @@ import 'core/theme/app_theme.dart';
 import 'core/routes/app_pages.dart';
 
 void main() async {
+  // 1. Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
-  await GetStorage.init();
-  runApp(
-    // DevicePreview(
-    //  enabled: true,
 
-    //  builder: (BuildContext context) {
-    //  return
-    HRManagementApp(),
-    //  },
-    // ),
-  );
+  // 2. Initialize GetStorage and WAIT for it
+  try {
+    // Initialize storage and wait for it
+    await GetStorage.init();
+  } catch (e) {
+    debugPrint("GetStorage Init Error: $e");
+    // Fallback or handle error so the app doesn't stay blank
+  }
+
+  runApp(const HRManagementApp());
 }
 
 class HRManagementApp extends StatelessWidget {

@@ -29,9 +29,14 @@ class ChatDetailScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final msg = controller.activeMessages[index];
                   return ChatBubble(
-                    isMe: msg['isMe'] as bool,
-                    text: msg['text'] as String,
-                    time: msg['time'] as String,
+                    isMe: msg['isMe'],
+                    text: msg['text'],
+                    time: msg['time'],
+                    onLongPress: () {
+                      if (msg['isMe']) {
+                        _showOptionsSheet(index, msg['text'], msg['isMe']);
+                      }
+                    },
                   );
                 },
               ),
@@ -87,6 +92,91 @@ class ChatDetailScreen extends StatelessWidget {
         preferredSize: const Size.fromHeight(1.0),
         child: Container(color: const Color(0xFFF1F1F1), height: 1.0),
       ),
+    );
+  }
+
+  void _showEditDialog(int index, String currentText) {
+    final editC = TextEditingController(text: currentText);
+    Get.defaultDialog(
+      contentPadding: const EdgeInsets.all(16),
+      titlePadding: const EdgeInsets.only(top: 16, bottom: 8),
+      title: "Edit Message",
+      content: TextField(controller: editC),
+      textConfirm: "Save",
+      cancel: TextButton(
+        onPressed: () => Get.back(),
+        child: const Text("Cancel"),
+      ),
+      onConfirm: () {
+        controller.editMessage(index, editC.text);
+        Get.back();
+      },
+    );
+  }
+
+  void _showOptionsSheet(int index, String currentText, bool isMe) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: Wrap(
+          children: [
+            // 1. Only show Edit if the message belongs to ME
+            if (isMe)
+              ListTile(
+                leading: const Icon(
+                  Icons.edit_outlined,
+                  color: Color(0xFF7B61FF),
+                ),
+                title: const Text('Edit Message'),
+                onTap: () {
+                  Get.back();
+                  _showEditDialog(index, currentText);
+                },
+              ),
+
+            // 2. Always show Delete (for both Me and Others)
+            ListTile(
+              leading: const Icon(
+                Icons.delete_outline,
+                color: Colors.redAccent,
+              ),
+              title: const Text(
+                'Delete Message',
+                style: TextStyle(color: Colors.redAccent),
+              ),
+              onTap: () {
+                Get.back();
+                _confirmDelete(index);
+              },
+            ),
+
+            // Padding for modern devices with bottom bars
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _confirmDelete(int index) {
+    Get.defaultDialog(
+      title: "Delete Message?",
+      middleText: "This message will be removed from your view.",
+      textConfirm: "Delete",
+      confirmTextColor: Colors.white,
+      buttonColor: Colors.redAccent,
+      onConfirm: () {
+        controller.deleteMessage(index);
+        Get.back();
+      },
+      onCancel: () => Get.back(),
     );
   }
 }

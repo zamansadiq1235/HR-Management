@@ -1,5 +1,3 @@
-// ignore_for_file: unnecessary_underscores, deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/constants/app_colors.dart';
@@ -15,127 +13,115 @@ class ClockInScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+      backgroundColor: const Color(0xFFF8F9FD),
       body: Stack(
         children: [
-          //  Header 
-          Container(
-            height: 255,
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(24),
-                bottomRight: Radius.circular(24),
+          CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.topCenter,
+                  children: [
+                    SizedBox(height: 350, width: double.infinity),
+                    Container(
+                      height: 240,
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(30),
+                          bottomRight: Radius.circular(30),
+                        ),
+                      ),
+                      child: _buildHeaderContent(context),
+                    ),
+                    Positioned(
+                      bottom: -40,
+                      left: 16,
+                      right: 16,
+                      child: SizedBox(height: 240, child: WorkingHoursCard()),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            child: _buildHeader(),
-          ),
 
-          // ── Content ──────────────────────────
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 160, 16, 0),
-            child: ListView(
-              physics: const BouncingScrollPhysics(),
-              children: [
-                const WorkingHoursCard(),
-                const SizedBox(height: 20),
-
-                /// 🔥 FIXED OBX
-                Obx(() {
+              const SliverToBoxAdapter(child: SizedBox(height: 60)),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                sliver: Obx(() {
                   final list = controller.attendanceList;
 
-                  // ✅ FIX 1
                   if (list.isEmpty) {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 40),
-                        child: Text("No Records"),
+                    return const SliverToBoxAdapter(
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 20),
+                          child: Text(
+                            "No Records Found",
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ),
                       ),
                     );
                   }
 
-                  return ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: list.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
-                    itemBuilder: (_, index) {
-                      // ✅ FIX 2 (use local list)
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
                       final e = list[index];
-
-                      return AttendanceCard(
-                        attendance: e,
-                        onTap: () => controller.goToDetail(e),
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: AttendanceCard(
+                          attendance: e,
+                          onTap: () => controller.goToDetail(e),
+                        ),
                       );
-                    },
+                    }, childCount: list.length),
                   );
                 }),
-
-                const SizedBox(height: 20),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  // ── Header UI (unchanged) ──────────────────
-  Widget _buildHeader() {
+  Widget _buildHeaderContent(BuildContext context) {
     return SafeArea(
-      bottom: false,
-      child: Stack(
-        children: [
-         
-          const Positioned(
-            top: 26,
-            right: 82,
-            child: Icon(Icons.star, color: Colors.white24, size: 9),
-          ),
-
-          Positioned(
-            right: 20,
-            top: 0,
-            bottom: 60,
-            child: Image.asset(
-              'assets/images/attendant.png',
-              width: 90,
-              height: 80,
-              fit: BoxFit.contain,
-              errorBuilder: (_, __, ___) => Icon(
-                Icons.alarm_rounded,
-                color: Colors.white.withOpacity(0.25),
-                size: 72,
-              ),
-            ),
-          ),
-
-          const Padding(
-            padding: EdgeInsets.only(left: 20, right: 20, top: 60),
-            child: Column(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(25, 25, 10, 20),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   "Let's Clock-In!",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 23,
+                    fontSize: 24,
                     fontWeight: FontWeight.w800,
-                    letterSpacing: -0.4,
+                    letterSpacing: -0.5,
                   ),
                 ),
-                SizedBox(height: 4),
+                SizedBox(height: 1),
                 Text(
                   "Don't miss your clock in schedule",
-                  style: TextStyle(color: Colors.white70, fontSize: 13),
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 226, 221, 241),
+                    fontSize: 13,
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
+            Image.asset('assets/images/attendant.png', width: 85),
+          ],
+        ),
       ),
     );
   }
 }
-

@@ -21,7 +21,7 @@ class ForgotPasswordView extends GetView<AuthViewModel> {
 
   ForgotPasswordView({super.key});
 
-  // helpers 
+  // helpers
 
   String _stepTitle(ForgotPasswordStep step) {
     switch (step) {
@@ -66,15 +66,14 @@ class ForgotPasswordView extends GetView<AuthViewModel> {
     }
   }
 
-  //  step bodies 
+  //  step bodies
 
   Widget _buildEmailStep() {
-    return Form(
-      key: _emailFormKey,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      child: Column(
-        children: [
-          CustomTextfield(
+    return Column(
+      children: [
+        Form(
+          key: _emailFormKey,
+          child: CustomTextfield(
             label: 'Email',
             hintText: 'My email',
             controller: controller.forgotPasswordEmailController,
@@ -93,16 +92,16 @@ class ForgotPasswordView extends GetView<AuthViewModel> {
               ),
             ),
           ),
-          SizedBox(height: 20.h),
-          CustomButton(
-            text: 'Send Verification Code',
-            onPressed: () {
-              final isValid = _emailFormKey.currentState?.validate() ?? false;
-              if (isValid) controller.submitForgotPasswordEmail();
-            },
-          ),
-        ],
-      ),
+        ),
+        SizedBox(height: 20.h),
+        CustomButton(
+          text: 'Send Verification Code',
+          onPressed: () {
+            final isValid = _emailFormKey.currentState?.validate() ?? false;
+            if (isValid) controller.submitForgotPasswordEmail();
+          },
+        ),
+      ],
     );
   }
 
@@ -144,37 +143,38 @@ class ForgotPasswordView extends GetView<AuthViewModel> {
   Widget _buildNewPasswordStep() {
     return Form(
       key: _passwordFormKey,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         children: [
           /// Password field
           Obx(
             () => CustomTextfield(
               label: 'Password',
-              hintText: 'Input Password',
-              obscureText: !controller.passwordVisible.value,
-              controller: controller.forgotPasswordNewPasswordController,
-              validator: controller.validatePassword,
-              keyboardType: TextInputType.text,
-              isPassword: true,
+              hintText: 'My Password',
               prefixIcon: Padding(
                 padding: const EdgeInsets.all(10),
                 child: SvgPicture.asset(
                   AppAssets.passwordicon,
-                  colorFilter: const ColorFilter.mode(
+                  width: 20,
+                  height: 20,
+                  colorFilter: ColorFilter.mode(
                     AppColors.primary,
                     BlendMode.srcIn,
                   ),
                 ),
               ),
+              controller: controller.forgotPasswordNewPasswordController,
+              validator: controller.validatePassword,
+              keyboardType: TextInputType.text,
+              obscureText: !controller.forgotPasswordPasswordVisible.value,
+              isPassword: true,
               suffixIcon: IconButton(
                 icon: Icon(
-                  controller.forgotPasswordPasswordVisible.value
+                  controller.passwordVisible.value
                       ? Icons.visibility_outlined
                       : Icons.visibility_off_outlined,
                   color: AppColors.primary,
                 ),
-                onPressed: controller.toggleForgotPasswordPasswordVisibility,
+                onPressed: controller.togglePasswordVisibility,
               ),
             ),
           ),
@@ -184,23 +184,25 @@ class ForgotPasswordView extends GetView<AuthViewModel> {
           /// Confirm password field
           Obx(
             () => CustomTextfield(
-              label: 'Confirm Password',
-              hintText: 'Re Enter Your Password',
-              obscureText: !controller.passwordVisible.value,
-              controller: controller.forgotPasswordConfirmPasswordController,
-              validator: controller.validateForgotPasswordConfirm,
-              keyboardType: TextInputType.text,
-              isPassword: true,
+              label: 'Password',
+              hintText: 'My Password',
               prefixIcon: Padding(
                 padding: const EdgeInsets.all(10),
                 child: SvgPicture.asset(
                   AppAssets.passwordicon,
-                  colorFilter: const ColorFilter.mode(
+                  width: 20,
+                  height: 20,
+                  colorFilter: ColorFilter.mode(
                     AppColors.primary,
                     BlendMode.srcIn,
                   ),
                 ),
               ),
+              controller: controller.forgotPasswordConfirmPasswordController,
+              validator: controller.validatePassword,
+              keyboardType: TextInputType.text,
+              obscureText: !controller.passwordVisible.value,
+              isPassword: true,
               suffixIcon: IconButton(
                 icon: Icon(
                   controller.forgotPasswordConfirmPasswordVisible.value
@@ -208,8 +210,7 @@ class ForgotPasswordView extends GetView<AuthViewModel> {
                       : Icons.visibility_off_outlined,
                   color: AppColors.primary,
                 ),
-                onPressed:
-                    controller.toggleForgotPasswordConfirmPasswordVisibility,
+                onPressed: controller.togglePasswordVisibility,
               ),
             ),
           ),
@@ -237,7 +238,7 @@ class ForgotPasswordView extends GetView<AuthViewModel> {
     );
   }
 
-  // ─── build ────────────────────────────────────────────────────────────────
+  //  build
 
   @override
   Widget build(BuildContext context) {
@@ -255,67 +256,76 @@ class ForgotPasswordView extends GetView<AuthViewModel> {
         child: Obx(() {
           final step = controller.forgotPasswordStep.value;
           return Stack(
+            alignment: Alignment.bottomCenter,
             children: [
-              // ── Bottom white card ──────────────────────────────────────
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 0),
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(32.r),
-                      topRight: Radius.circular(32.r),
+              //  Bottom white card
+              Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.topCenter,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24.w,
+                      vertical: 0,
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.07),
-                        blurRadius: 24.r,
-                        offset: Offset(0, -6.h),
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(32.r),
+                        topRight: Radius.circular(32.r),
                       ),
-                    ],
-                  ),
-                  child: SingleChildScrollView(
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(height: 14.h),
-
-                        // ── Step header (drag handle + title + subtitle) ──
-                        ForgotPasswordStepHeader(
-                          title: _stepTitle(step),
-                          subtitle: _stepSubtitle(step),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.07),
+                          blurRadius: 24.r,
+                          offset: Offset(0, -6.h),
                         ),
-
-                        SizedBox(height: 20.h),
-
-                        // ── Step body ─────────────────────────────────────
-                        if (step == ForgotPasswordStep.email) _buildEmailStep(),
-
-                        if (step == ForgotPasswordStep.code) _buildOtpStep(),
-
-                        if (step == ForgotPasswordStep.newPassword)
-                          _buildNewPasswordStep(),
-
-                        if (step == ForgotPasswordStep.success)
-                          _buildSuccessStep(),
-
-                        SizedBox(height: 28.h),
                       ],
                     ),
-                  ),
-                ),
-              ),
+                    child: SingleChildScrollView(
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 25.h),
 
-              // ── Floating purple icon card ──────────────────────────────
-              FloatingIconCard(
-                assetPath: AppAssets.forgotPassword,
-                bottom: _iconBottom(step),
+                          //  Step header (drag handle + title + subtitle)
+                          ForgotPasswordStepHeader(
+                            title: _stepTitle(step),
+                            subtitle: _stepSubtitle(step),
+                          ),
+
+                          SizedBox(height: 20.h),
+
+                          //  Step body
+                          if (step == ForgotPasswordStep.email)
+                            _buildEmailStep(),
+
+                          if (step == ForgotPasswordStep.code) _buildOtpStep(),
+
+                          if (step == ForgotPasswordStep.newPassword)
+                            _buildNewPasswordStep(),
+
+                          if (step == ForgotPasswordStep.success)
+                            _buildSuccessStep(),
+
+                          SizedBox(height: 28.h),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  //  Floating purple icon card
+                  Positioned(
+                    top: step == ForgotPasswordStep.code ? -47 : -43,
+                    child: FloatingIconCard(
+                      assetPath: AppAssets.forgotPassword,
+                      bottom: _iconBottom(step),
+                    ),
+                  ),
+                ],
               ),
             ],
           );

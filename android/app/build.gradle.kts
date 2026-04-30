@@ -16,8 +16,9 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
+    // Instead of jvmTarget = JavaVersion.VERSION_17.toString()
+    jvmTarget = "17" 
+}
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
@@ -31,12 +32,20 @@ android {
     }
 
     buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
-        }
+    getByName("release") {
+        // In Kotlin DSL, we use = for assignment
+        isMinifyEnabled = true
+        isShrinkResources = true
+        
+        // Use parentheses for function calls
+        proguardFiles(
+            getDefaultProguardFile("proguard-android-optimize.txt"),
+            "proguard-rules.pro"
+        )
+
+        signingConfig = signingConfigs.getByName("debug")
     }
+}
 }
 
 flutter {

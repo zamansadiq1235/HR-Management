@@ -1,5 +1,3 @@
-// ─── lib/features/attendance/widgets/working_hours_card.dart ─
-
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
@@ -12,10 +10,12 @@ class WorkingHoursCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = Get.find<AttendanceController>();
+    final AttendanceController c = Get.isRegistered<AttendanceController>()
+        ? Get.find<AttendanceController>()
+        : Get.put(AttendanceController());
 
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -23,14 +23,13 @@ class WorkingHoursCard extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.06),
             blurRadius: 14,
-            offset: const Offset(0, 4),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          //  Static title — no Obx needed ───────
           const Text(
             'Total Working Hour',
             style: TextStyle(
@@ -42,11 +41,10 @@ class WorkingHoursCard extends StatelessWidget {
           const SizedBox(height: 2),
           const Text(
             'Paid Period 1 Sept 2024 - 30 Sept 2024',
-            style: TextStyle(fontSize: 11.5, color: AppColors.textHint),
+            style: TextStyle(fontSize: 11.5, color: AppColors.textSecondary),
           ),
           const SizedBox(height: 14),
 
-          //  Hour boxes — each has its own Obx 
           Row(
             children: [
               Expanded(child: _TodayHourBox(controller: c)),
@@ -56,7 +54,6 @@ class WorkingHoursCard extends StatelessWidget {
           ),
           const SizedBox(height: 14),
 
-          //  Action buttons ─────────────────────
           _ActionButtons(controller: c),
         ],
       ),
@@ -64,9 +61,9 @@ class WorkingHoursCard extends StatelessWidget {
   }
 }
 
-//  Today hour box — owns its own Obx ───────────────────────
 class _TodayHourBox extends StatelessWidget {
   final AttendanceController controller;
+
   const _TodayHourBox({required this.controller});
 
   @override
@@ -77,9 +74,9 @@ class _TodayHourBox extends StatelessWidget {
   }
 }
 
-//  Pay period box — owns its own Obx ───────────────────────
 class _PayPeriodHourBox extends StatelessWidget {
   final AttendanceController controller;
+
   const _PayPeriodHourBox({required this.controller});
 
   @override
@@ -87,50 +84,71 @@ class _PayPeriodHourBox extends StatelessWidget {
     return Obx(
       () => _HourBox(
         label: 'This Pay Period',
+
         value: controller.payPeriodHours.value,
       ),
     );
   }
 }
 
-//  Hour stat box — pure display, no Obx ────────────────────
 class _HourBox extends StatelessWidget {
   final String label;
+
   final String value;
+
   const _HourBox({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+
       decoration: BoxDecoration(
         color: const Color(0xFFF8F8FB),
+
         borderRadius: BorderRadius.circular(12),
+
         border: Border.all(color: const Color(0xFFEEEEF5)),
       ),
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+
         children: [
           Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.access_time_rounded,
+
                 size: 13,
-                color: AppColors.textHint,
+
+                color: AppColors.textSecondary,
               ),
+
               const SizedBox(width: 5),
+
               Text(
                 label,
-                style: const TextStyle(fontSize: 11, color: AppColors.textHint),
+
+                style: const TextStyle(
+                  fontSize: 11,
+
+                  color: AppColors.textSecondary,
+                ),
               ),
             ],
           ),
+
           const SizedBox(height: 6),
+
           Text(
             value,
+
             style: const TextStyle(
               fontSize: 20,
+
               fontWeight: FontWeight.w700,
+
               color: AppColors.textPrimary,
             ),
           ),
@@ -140,34 +158,32 @@ class _HourBox extends StatelessWidget {
   }
 }
 
-//  Action buttons — Obx is THE OUTERMOST widget here ───────
-
 class _ActionButtons extends StatelessWidget {
   final AttendanceController controller;
   const _ActionButtons({required this.controller});
 
   @override
   Widget build(BuildContext context) {
-    
     return Obx(() {
       final state = controller.clockState.value;
 
       switch (state) {
-        //  Not clocked in yet ─────────────────
         case ClockState.clockedOut:
           return _FullButton(
             label: 'Clock In Now',
-            onTap: controller.goToClockInArea,
+            onTap: () {
+              print("Clock In Button Tapped");
+              controller.goToClockInArea();
+            },
             active: true,
           );
 
-        //  Working 
         case ClockState.clockedIn:
           return Row(
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: controller.takeBreak,
+                  onPressed: () => controller.takeBreak(),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.primary,
                     side: const BorderSide(
@@ -192,7 +208,6 @@ class _ActionButtons extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF1A1A2E),
                     foregroundColor: Colors.white,
-                    elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(28),
                     ),
@@ -207,13 +222,12 @@ class _ActionButtons extends StatelessWidget {
             ],
           );
 
-        //  On break ───────────────────────────
         case ClockState.onBreak:
           return Row(
             children: [
               Expanded(
                 child: ElevatedButton(
-                  onPressed: controller.backToWork,
+                  onPressed: () => controller.backToWork(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
@@ -251,7 +265,6 @@ class _ActionButtons extends StatelessWidget {
             ],
           );
 
-        //  Clocked out for today ──────────────
         case ClockState.finished:
           return _FullButton(label: 'Clocked Out', onTap: null, active: false);
       }
@@ -259,7 +272,6 @@ class _ActionButtons extends StatelessWidget {
   }
 }
 
-//  Full-width button helper ─────────────────────────────────
 class _FullButton extends StatelessWidget {
   final String label;
   final VoidCallback? onTap;
@@ -275,21 +287,18 @@ class _FullButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 48,
+      height: 52,
       child: ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
           backgroundColor: active
               ? AppColors.primary
               : AppColors.primarySurface,
-          disabledBackgroundColor: AppColors.primarySurface,
           foregroundColor: active ? Colors.white : AppColors.primary,
-          disabledForegroundColor: AppColors.primary.withOpacity(0.6),
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(28),
           ),
-          textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
         ),
         child: Text(label),
       ),

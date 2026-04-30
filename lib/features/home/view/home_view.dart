@@ -7,6 +7,7 @@ import 'package:hrmanagement/core/constants/app_assets.dart';
 import 'package:hrmanagement/core/constants/app_colors.dart';
 import 'package:hrmanagement/features/notification/view/notification_screen.dart';
 import 'package:hrmanagement/features/profile/views/profile_screen.dart';
+import '../../../core/constants/app_text_styles.dart';
 import '../../messages/view/messagelist_screen.dart';
 import '../controller/home_view_model.dart';
 import '../widgets/meeting_card.dart';
@@ -22,93 +23,98 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
+      appBar: AppBar(
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+        backgroundColor: AppColors.background,
+
+        /// HEADER
+        title: Row(
+          children: [
+            InkWell(
+              onTap: () => Get.to(MyProfileScreen()),
+              child: SizedBox(
+                child: Row(
+                  children: [
+                    const CircleAvatar(
+                      radius: 25,
+                      backgroundImage: AssetImage("assets/images/Ellipse2.png"),
+                    ),
+                    const SizedBox(width: 8),
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Tonald Drump",
+                              style: AppTextStyles.bodyText1.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            SizedBox(width: 6),
+                            Icon(
+                              Icons.verified,
+                              color: AppColors.primary,
+                              size: 20,
+                            ),
+                          ],
+                        ),
+                        Text(
+                          "Junior Full Stack Developer",
+                          style: TextStyle(
+                            color: AppColors.primary,
+                            fontSize: 12.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const Spacer(),
+
+            InkWell(
+              onTap: () => Get.to(MessageListScreen()),
+              child: CircleAvatar(
+                radius: 20,
+                backgroundColor: AppColors.primaryLight.withOpacity(0.2),
+                child: SvgPicture.asset(
+                  AppAssets.smsfilled,
+                  width: 22,
+                  height: 22,
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+            SizedBox(width: 6),
+            CircleAvatar(
+              radius: 20,
+              backgroundColor: AppColors.primaryLight.withOpacity(0.2),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.notifications,
+                  size: 22,
+                  color: AppColors.primary,
+                ),
+                onPressed: () => Get.to(NotificationScreen()),
+              ),
+            ),
+          ],
+        ),
+      ),
 
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
 
           child: ListView(
             children: [
-              /// HEADER
-              Row(
-                children: [
-                  InkWell(
-                    onTap: () => Get.to(MyProfileScreen()),
-                    child: SizedBox(
-                      child: Row(
-                        children: [
-                          const CircleAvatar(
-                            radius: 25,
-                            backgroundImage: AssetImage(
-                              "assets/images/Ellipse2.png",
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-
-                          const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    "Tonald Drump",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(width: 6),
-                                  Icon(
-                                    Icons.verified,
-                                    color: AppColors.primary,
-                                    size: 20,
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                "Junior Full Stack Developer",
-                                style: TextStyle(
-                                  color: AppColors.primary,
-                                  fontSize: 12.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const Spacer(),
-
-                  InkWell(
-                    onTap: () => Get.to(MessageListScreen()),
-                    child: CircleAvatar(
-                      radius: 20,
-                      backgroundColor: AppColors.primaryLight.withOpacity(0.2),
-                      child: SvgPicture.asset(
-                        AppAssets.smsfilled,
-                        width: 22,
-                        height: 22,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 6),
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: AppColors.primaryLight.withOpacity(0.2),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.notifications,
-                        size: 22,
-                        color: AppColors.primary,
-                      ),
-                      onPressed: () => Get.to(NotificationScreen()),
-                    ),
-                  ),
-                ],
-              ),
-
               const SizedBox(height: 20),
 
               const SummaryCard(),

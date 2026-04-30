@@ -10,9 +10,9 @@ import '../controller/onboarding_view_model.dart';
 
 class OnboardingView extends GetView<OnboardingViewModel> {
   const OnboardingView({super.key});
-
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(OnboardingViewModel());
     return Scaffold(
       body: Container(
         width: context.width,
@@ -149,7 +149,7 @@ class OnboardingView extends GetView<OnboardingViewModel> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        SizedBox(height: 15.h),
+                        SizedBox(height: 25.h),
                         controller.selectedPageIndex.value ==
                                 controller.onboardingPages.length - 1
                             ? Container(height: 1)

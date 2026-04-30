@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/constants/app_colors.dart';
 import '../controllers/profile_controller.dart';
+import '../widgets/profile_avatar.dart';
 
 class MyProfileScreen extends StatelessWidget {
   MyProfileScreen({super.key});
@@ -69,9 +70,10 @@ class MyProfileScreen extends StatelessWidget {
                 // Avatar
                 const SizedBox(height: 60),
                 Obx(
-                  () => _ProfileAvatar(
-                    avatarPath:
-                        _c.avatarPath.value ?? _c.profile.value.avatarPath,
+                  () => ProfileAvatar(
+                    avatarPath: _c.avatarPath.value?.isNotEmpty == true
+                        ? _c.avatarPath.value
+                        : _c.profile.value.avatarPath,
                   ),
                 ),
                 const SizedBox(height: 14),
@@ -210,54 +212,6 @@ class MyProfileScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-//  Profile avatar ───────────────────────────────────────────
-class _ProfileAvatar extends StatelessWidget {
-  final String? avatarPath;
-  const _ProfileAvatar({this.avatarPath});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 110,
-      height: 110,
-      decoration: BoxDecoration(
-        color: const Color(0xFFEEEBFF),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white, width: 3),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: avatarPath != null
-            ? Image.asset(
-                avatarPath!,
-                fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => const _AvatarPlaceholder(),
-              )
-            : const _AvatarPlaceholder(),
-      ),
-    );
-  }
-}
-
-class _AvatarPlaceholder extends StatelessWidget {
-  const _AvatarPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFFEEEBFF),
-      child: Image.asset('assets/images/Ellipse2.png', fit: BoxFit.cover),
     );
   }
 }

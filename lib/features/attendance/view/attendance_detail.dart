@@ -2,6 +2,8 @@
 
 // ignore_for_file: deprecated_member_use, unnecessary_underscores
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -29,12 +31,12 @@ class AttendanceDetailScreen extends StatelessWidget {
             margin: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: AppColors.primarySurface,
-              borderRadius: BorderRadius.circular(10),
+              shape: BoxShape.circle,
             ),
             child: const Icon(
               Icons.chevron_left_rounded,
               color: AppColors.primary,
-              size: 22,
+              size: 25,
             ),
           ),
         ),
@@ -100,8 +102,8 @@ class AttendanceDetailScreen extends StatelessWidget {
                         width: double.infinity,
                         height: 240,
                         child: attendance.selfieImagePath != null
-                            ? Image.asset(
-                                attendance.selfieImagePath!,
+                            ? Image.file(
+                                File(attendance.selfieImagePath!),
                                 fit: BoxFit.cover,
                                 errorBuilder: (_, __, ___) => _mockSelfie(),
                               )
@@ -157,7 +159,7 @@ class AttendanceDetailScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12.5,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textHint,
+                        color: AppColors.textSecondary,
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -194,7 +196,7 @@ class AttendanceDetailScreen extends StatelessWidget {
                               value: attendance.totalHours,
                             ),
                           ),
-                          const SizedBox(width: 14),
+                          const SizedBox(width: 1),
                           Expanded(
                             child: _StatCell(
                               label: 'Clock in & Out',
@@ -213,7 +215,7 @@ class AttendanceDetailScreen extends StatelessWidget {
                               value: attendance.breakHours,
                             ),
                           ),
-                          const SizedBox(width: 14),
+                          const SizedBox(width: 1),
                           Expanded(
                             child: _StatCell(
                               label: 'Take A Break & Back To Work',
@@ -277,7 +279,10 @@ class _StatCell extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 10.5, color: AppColors.textHint),
+          style: const TextStyle(
+            fontSize: 10.5,
+            color: AppColors.textSecondary,
+          ),
         ),
         const SizedBox(height: 4),
         Text(
@@ -339,7 +344,7 @@ class _ExportSuccessSheet extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13.5,
-                  color: AppColors.textHint,
+                  color: AppColors.textSecondary,
                   height: 1.5,
                 ),
               ),

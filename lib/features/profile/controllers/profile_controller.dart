@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:hrmanagement/core/routes/app_routes.dart';
 import 'package:hrmanagement/core/widgets/custom_button.dart';
 import 'package:hrmanagement/features/profile/views/profile_screen.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../data/services/storage_services.dart';
 import '../models/profile_model.dart';
@@ -30,6 +31,7 @@ class ProfileController extends GetxController {
   final selectedState = 'DKI Jakarta'.obs;
   final selectedCity = 'Jakarta Selatan'.obs;
   final avatarPath = RxnString();
+  final ImagePicker _picker = ImagePicker();
 
   //  Password form fields
   late final TextEditingController currentPasswordCtrl;
@@ -82,13 +84,24 @@ class ProfileController extends GetxController {
     super.onClose();
   }
 
-  //  Avatar pick (simulated) ──────────────────────────────
-  void pickAvatar() {
-    // In real app: use image_picker
-    avatarPath.value = 'assets/images/avatar.png';
+  //  profile pick (simulated)
+  Future<void> pickAvatar(ImageSource source) async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: source,
+        maxWidth: 500, // Good practice to compress
+        imageQuality: 80,
+      );
+
+      if (pickedFile != null) {
+        avatarPath.value = pickedFile.path;
+      }
+    } catch (e) {
+      print("Error picking image: $e");
+    }
   }
 
-  //  Personal data update ─────────────────────────────────
+  //  Personal data update
   void showUpdateProfileConfirm(BuildContext context) {
     _showSheet(
       context: context,
@@ -127,7 +140,7 @@ class ProfileController extends GetxController {
       primaryLabel: 'View My Profile',
       showSecondary: false,
       onPrimary: () {
-        Get.back();
+        Get.to(MyProfileScreen());
       },
     );
   }
@@ -201,7 +214,7 @@ class ProfileController extends GetxController {
       onConfirm: () {
         // Execute original logout logic
         storage.logout();
-        Get.offAllNamed(AppRoutes.onboarding);
+        Get.offAllNamed(AppRoutes.signIn);
       },
     );
   }

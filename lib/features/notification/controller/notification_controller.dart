@@ -1,18 +1,6 @@
 import 'package:get/get.dart';
+import '../models/notifi_model.dart';
 
-class NotificationModel {
-  final String title;
-  final String subtitle;
-  final String time;
-  final String iconPath; // For asset icons or category types
-
-  NotificationModel({
-    required this.title,
-    required this.subtitle,
-    required this.time,
-    required this.iconPath,
-  });
-}
 
 class NotificationController extends GetxController {
   // Observable list of notifications
@@ -36,4 +24,8 @@ class NotificationController extends GetxController {
       iconPath: 'assets/icons/meeting_icon.png',
     ),
   ].obs;
+
+  void deletenotifi(int index) {
+    notifications.removeAt(index);
+  }
 }

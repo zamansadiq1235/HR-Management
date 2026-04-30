@@ -45,7 +45,7 @@ class OnboardingViewModel extends GetxController {
     ),
   ];
 
-  // 🔥 NEXT BUTTON
+  // NEXT BUTTON
   void forwardAction() {
     if (isLastPage) {
       _storage.setOnboardingDone();
@@ -60,7 +60,7 @@ class OnboardingViewModel extends GetxController {
     }
   }
 
-  // 🔥 SKIP
+  // SKIP
   void skipAction() {
     pageController.animateToPage(
       onboardingPages.length - 1,
@@ -70,7 +70,7 @@ class OnboardingViewModel extends GetxController {
   }
 
   void navigateToSignIn() {
-    _storage.setOnboardingDone(); // optional but recommended
+    _storage.setOnboardingDone();
     Get.offAllNamed(AppRoutes.signIn);
   }
 
@@ -84,4 +84,19 @@ class OnboardingViewModel extends GetxController {
     pageController.dispose();
     super.onClose();
   }
+
+  // void decideRoute() async {
+  //   final isOnboardingDone = _storage.isOnboardingDone;
+  //   final isLoggedIn = _storage.isLoggedIn;
+
+  //   await Future.delayed(const Duration(seconds: 2));
+
+  //   if (!isOnboardingDone) {
+  //     Get.offAllNamed(AppRoutes.onboarding);
+  //   } else if (!isLoggedIn) {
+  //     Get.offAllNamed(AppRoutes.signIn);
+  //   } else {
+  //     Get.offAllNamed(AppRoutes.navBar);
+  //   }
+  // }
 }

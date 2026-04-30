@@ -1,8 +1,7 @@
 // ignore_for_file: deprecated_member_use
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../core/constants/app_colors.dart';
 import '../models/task_model.dart';
 
@@ -13,6 +12,7 @@ class TaskDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get.arguments کے ذریعے ڈیٹا وصول کرنا
     final task = Get.arguments as TaskModel;
 
     return Scaffold(
@@ -27,10 +27,13 @@ class TaskDetailScreen extends StatelessWidget {
             margin: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: AppColors.primarySurface,
-              borderRadius: BorderRadius.circular(10),
+              shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.chevron_left_rounded,
-                color: AppColors.primary, size: 22),
+            child: const Icon(
+              Icons.chevron_left_rounded,
+              color: AppColors.primary,
+              size: 22,
+            ),
           ),
         ),
         title: const Text(
@@ -60,7 +63,7 @@ class TaskDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ── Title & status ────────────────────
+              // ── Title & Status ────────────────────
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                 child: Row(
@@ -79,7 +82,9 @@ class TaskDetailScreen extends StatelessWidget {
                     const SizedBox(width: 10),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 5),
+                        horizontal: 12,
+                        vertical: 5,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         borderRadius: BorderRadius.circular(20),
@@ -101,44 +106,98 @@ class TaskDetailScreen extends StatelessWidget {
                 child: Text(
                   'Created ${task.createdDate}',
                   style: const TextStyle(
-                      fontSize: 11.5, color: AppColors.textHint),
-                ),
-              ),
-
-              // ── Main image ────────────────────────
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: Container(
-                    width: double.infinity,
-                    height: 200,
-                    color: const Color(0xFFEEEBFF),
-                    child: const Icon(Icons.image_rounded,
-                        size: 56, color: AppColors.primary),
+                    fontSize: 11.5,
+                    color: AppColors.textHint,
                   ),
                 ),
               ),
 
-              // ── Thumbnail row ─────────────────────
+              // ── Main Image (Shows first attachment if available) ──
+              if (task.attachments.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: Container(
+                      width: double.infinity,
+                      height: 200,
+                      color: const Color(0xFFEEEBFF),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: (File(task.attachments.first).existsSync())
+                            ? Image.file(
+                                File(task.attachments.first),
+                                fit: BoxFit.cover,
+                              )
+                            : const Icon(
+                                Icons.broken_image,
+                                color: Colors.grey,
+                              ), // اگر فائل نہ ملے
+                      ),
+                    ),
+                  ),
+                ),
+
+              // ── Thumbnail Row (All attachments) ──
               if (task.attachments.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
-                  child: Row(
-                    children: task.attachments
-                        .take(3)
-                        .map((a) => Container(
-                              width: 68,
-                              height: 56,
-                              margin: const EdgeInsets.only(right: 8),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFDDE0FF),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Icon(Icons.image_rounded,
-                                  color: AppColors.primary, size: 24),
-                            ))
-                        .toList(),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: task.attachments.map((path) {
+                        final isPdf = path.endsWith('.pdf');
+                        final fileExists = File(path).existsSync();
+
+                        return GestureDetector(
+                          onTap: () {
+                            if (fileExists) {
+                              //  Implement file preview/download
+                            }
+                          },
+                          child: Container(
+                            width: 68,
+                            height: 56,
+                            margin: const EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFDDE0FF),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: isPdf
+                                  ? const Center(
+                                      child: Icon(
+                                        Icons.picture_as_pdf,
+                                        color: Colors.red,
+                                        size: 28,
+                                      ),
+                                    )
+                                  : fileExists
+                                  ? Image.file(
+                                      File(path),
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) =>
+                                          const Center(
+                                            child: Icon(
+                                              Icons.broken_image,
+                                              color: Colors.grey,
+                                              size: 24,
+                                            ),
+                                          ),
+                                    )
+                                  : const Center(
+                                      child: Icon(
+                                        Icons.file_present,
+                                        color: Colors.grey,
+                                        size: 24,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ),
 
@@ -146,10 +205,13 @@ class TaskDetailScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
                 child: Container(
+                  width: double.infinity,
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
                     border: Border.all(
-                        color: const Color(0xFFEEEEF5), width: 1),
+                      color: const Color(0xFFEEEEF5),
+                      width: 1,
+                    ),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
@@ -187,15 +249,20 @@ class TaskDetailScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Priority',
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textHint)),
+                          const Text(
+                            'Priority',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textHint,
+                            ),
+                          ),
                           const SizedBox(height: 6),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
                             decoration: BoxDecoration(
                               color: _red,
                               borderRadius: BorderRadius.circular(8),
@@ -203,8 +270,11 @@ class TaskDetailScreen extends StatelessWidget {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.flag_rounded,
-                                    size: 12, color: Colors.white),
+                                const Icon(
+                                  Icons.flag_rounded,
+                                  size: 12,
+                                  color: Colors.white,
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
                                   task.priority.label,
@@ -225,16 +295,21 @@ class TaskDetailScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Difficulty',
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textHint)),
+                          const Text(
+                            'Difficulty',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textHint,
+                            ),
+                          ),
                           const SizedBox(height: 6),
                           Row(
                             children: [
-                              const Text('😊',
-                                  style: TextStyle(fontSize: 18)),
+                              Text(
+                                _getDifficultyEmoji(task.difficulty.label),
+                                style: const TextStyle(fontSize: 18),
+                              ),
                               const SizedBox(width: 6),
                               Expanded(
                                 child: Text(
@@ -261,11 +336,14 @@ class TaskDetailScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Assignee',
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textHint)),
+                    const Text(
+                      'Assignee',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textHint,
+                      ),
+                    ),
                     const SizedBox(height: 10),
                     Row(
                       children: [
@@ -276,8 +354,11 @@ class TaskDetailScreen extends StatelessWidget {
                             color: Color(0xFFDDE0FF),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.person,
-                              color: AppColors.primary, size: 24),
+                          child: const Icon(
+                            Icons.person,
+                            color: AppColors.primary,
+                            size: 24,
+                          ),
                         ),
                         const SizedBox(width: 12),
                         Column(
@@ -306,59 +387,81 @@ class TaskDetailScreen extends StatelessWidget {
                 ),
               ),
 
-              // ── Comment section ───────────────────
+              const Divider(height: 1, color: Color(0xFFEEEEF5)),
+
+              // ── Modified Comment Section ──────────
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Comment Section',
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textHint)),
-                    const SizedBox(height: 10),
+                    const Text(
+                      'Comments',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textHint,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Sample Comment (آپ یہاں اپنی کمنٹس کی لسٹ میپ کر سکتے ہیں)
+                    _buildCommentItem(
+                      name: "Admin",
+                      message: "Please complete this task by tomorrow.",
+                      time: "2h ago",
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // Comment Input Field
                     Row(
                       children: [
-                        Container(
-                          width: 38,
-                          height: 38,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFDDE0FF),
-                            shape: BoxShape.circle,
+                        const CircleAvatar(
+                          radius: 18,
+                          backgroundColor: Color(0xFFDDE0FF),
+                          child: Icon(
+                            Icons.person,
+                            size: 20,
+                            color: AppColors.primary,
                           ),
-                          child: const Icon(Icons.person,
-                              color: AppColors.primary, size: 20),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 14, vertical: 10),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                  color: const Color(0xFFEEEEF5),
-                                  width: 1),
+                              color: const Color(0xFFF5F6FA),
+                              borderRadius: BorderRadius.circular(25),
                             ),
-                            child: const Text(
-                              'Write a comment...',
-                              style: TextStyle(
+                            child: const TextField(
+                              decoration: InputDecoration(
+                                hintText: 'Write a comment...',
+                                hintStyle: TextStyle(
                                   fontSize: 13,
-                                  color: AppColors.textHint),
+                                  color: AppColors.textHint,
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 10,
+                                ),
+                                border: InputBorder.none,
+                              ),
                             ),
                           ),
                         ),
                         const SizedBox(width: 8),
                         Container(
-                          width: 38,
-                          height: 38,
-                          decoration: BoxDecoration(
-                            color: AppColors.primarySurface,
-                            borderRadius: BorderRadius.circular(10),
+                          width: 40,
+                          height: 40,
+                          decoration: const BoxDecoration(
+                            color: AppColors.primary,
+                            shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.send_rounded,
-                              color: AppColors.primary, size: 18),
+                          child: const Icon(
+                            Icons.send_rounded,
+                            color: Colors.white,
+                            size: 18,
+                          ),
                         ),
                       ],
                     ),
@@ -370,5 +473,72 @@ class TaskDetailScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  // Helper widget for comment items
+  Widget _buildCommentItem({
+    required String name,
+    required String message,
+    required String time,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const CircleAvatar(
+          radius: 16,
+          backgroundColor: Color(0xFFEEEEF5),
+          child: Icon(Icons.person, size: 18, color: Colors.grey),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    time,
+                    style: const TextStyle(
+                      color: AppColors.textHint,
+                      fontSize: 11,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                message,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Helper for difficulty emojis
+  String _getDifficultyEmoji(String difficulty) {
+    switch (difficulty.toLowerCase()) {
+      case 'easy':
+        return '😊';
+      case 'medium':
+        return '😐';
+      case 'hard':
+        return '🔥';
+      default:
+        return '✨';
+    }
   }
 }

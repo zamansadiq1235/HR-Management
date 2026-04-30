@@ -60,7 +60,12 @@ class SignInView extends GetView<AuthViewModel> {
               bottom: 0,
               child: Container(
                 width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 28.h),
+                padding: EdgeInsets.only(
+                  left: 24.w,
+                  top: 20.h,
+                  right: 24.w,
+                  bottom: 0,
+                ),
                 decoration: const BoxDecoration(
                   color: AppColors.white,
                   borderRadius: BorderRadius.only(
@@ -313,6 +318,7 @@ class SignInView extends GetView<AuthViewModel> {
                               ),
                             ),
                           ),
+                          SizedBox(height: 25.h),
                         ],
                       ),
                     );

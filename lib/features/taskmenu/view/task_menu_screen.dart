@@ -14,180 +14,94 @@ class TaskMenuScreen extends StatelessWidget {
 
   final TaskMenuController _c = Get.put(TaskMenuController());
 
-  static const _purple = AppColors.primary;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: Stack(
-        children: [
-          SizedBox(
-            height: double.infinity,
-            width: double.infinity,
-          ), // Placeholder for header height
-          Container(
-            height: 255,
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
-            ),
-            child: _buildHeader(),
-          ),
-
-          Positioned(
-            top: 190,
-            left: 0,
-            right: 0,
-            child: SizedBox(
-              height: 400,
-              width: double.infinity,
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.only(bottom: 100),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSummaryCard(),
-                    const SizedBox(height: 16),
-                    _buildBurnoutCard(),
-                    const SizedBox(height: 16),
-                    _buildTabBar(),
-                    const SizedBox(height: 16),
-                    _buildTaskList(),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: _buildCreateButton(),
-    );
-  }
-
-  //  Purple Header
-
-  Widget _buildHeader() {
-    return SafeArea(
-      bottom: false,
-      child: Stack(
-        children: [
-          // Text
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 60),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
+      backgroundColor: const Color(0xFFF8F9FD), // Slightly off-white background
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          // 1. The Purple Header
+          SliverToBoxAdapter(
+            child: Stack(
+              clipBehavior: Clip.none,
               children: [
-                Text(
-                  'Challanges Awaiting',
-                  style: AppTextStyles.h2.copyWith(
-                    fontSize: 22,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 1),
-                Text(
-                  "Let's tackle your to do list",
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
+                _buildPurpleBackground(context),
+                Positioned(
+                  top: 160, // This creates the overlap
+                  left: 02,
+                  right: 2,
+                  child: _buildSummaryCard(),
                 ),
               ],
             ),
           ),
-          // Luggage illustration placeholder
-          Positioned(
-            right: 20,
-            top: 0,
-            bottom: 60,
-            child: Image.asset(
-              'assets/images/task.png',
-              width: 90,
-              height: 80,
-              fit: BoxFit.contain,
+
+          // 2. Padding for the overlap area
+          const SliverToBoxAdapter(child: SizedBox(height: 100)),
+
+          // 3. The rest of the scrollable content
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                _buildBurnoutCard(),
+                const SizedBox(height: 20),
+                _buildTabBar(),
+                const SizedBox(height: 20),
+                _buildTaskList(),
+                const SizedBox(height: 120), // Bottom padding for button
+              ]),
             ),
           ),
         ],
       ),
+      // Floating or Bottom button
+      bottomNavigationBar: _buildCreateButton(),
+      extendBody: true, // Allows content to scroll under the button blur
     );
   }
 
-  //  Summary Card
-  Widget _buildSummaryCard() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-      child: Transform.translate(
-        offset: const Offset(0, -1),
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.06),
-                blurRadius: 14,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
+  Widget _buildPurpleBackground(BuildContext context) {
+    return Container(
+      height: 240,
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        color: AppColors.primary,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(30),
+          bottomRight: Radius.circular(30),
+        ),
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(25.0, 25.0, 10, 8.0),
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Summary of Your Work',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 2),
-              const Text(
-                'Your current task progress',
-                style: TextStyle(fontSize: 12, color: AppColors.textHint),
-              ),
-              const SizedBox(height: 12),
-              Obx(
-                () => Row(
-                  children: [
-                    Expanded(
-                      child: TaskSummaryBox(
-                        label: 'To Do',
-                        count: _c.toDoCount,
-                        dotColor: _purple,
-                        icon: Icons.radio_button_unchecked_rounded,
-                      ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Challanges Awaiting',
+                    style: AppTextStyles.h2.copyWith(
+                      color: Colors.white,
+                      fontSize: 24,
                     ),
-                    const SizedBox(width: 5),
-                    Expanded(
-                      child: TaskSummaryBox(
-                        label: 'In Progress',
-                        count: _c.inProgressCount,
-                        dotColor: const Color(0xFFFFA500),
-                        icon: Icons.timelapse_rounded,
-                      ),
+                  ),
+                  const SizedBox(height: 1),
+                  const Text(
+                    "Let's tackle your to do list",
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 226, 221, 241),
+                      fontSize: 13,
                     ),
-                    const SizedBox(width: 5),
-                    Expanded(
-                      child: TaskSummaryBox(
-                        label: 'Done',
-                        count: _c.doneCount,
-                        dotColor: const Color(0xFF00C897),
-                        icon: Icons.check_circle_rounded,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+              // Your clipboard image
+              Image.asset('assets/images/task.png', width: 80),
             ],
           ),
         ),
@@ -195,74 +109,193 @@ class TaskMenuScreen extends StatelessWidget {
     );
   }
 
-  //  Burnout Card
+  // Refined Summary Card to match UI colors
+  Widget _buildSummaryCard() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 14),
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Summary of Your Work',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+          const Text(
+            'Your current task progress',
+            style: TextStyle(color: Colors.grey, fontSize: 12),
+          ),
+          const SizedBox(height: 16),
+          Obx(
+            () => Row(
+              children: [
+                _summaryBox(
+                  'To Do',
+                  _c.toDoCount,
+                  const Color(0xFF7B61FF),
+                  Icons.code_rounded,
+                ),
+                const SizedBox(width: 8),
+                _summaryBox(
+                  'In Progress',
+                  _c.inProgressCount,
+                  Colors.orange,
+                  Icons.access_time,
+                ),
+                const SizedBox(width: 8),
+                _summaryBox(
+                  'Done',
+                  _c.doneCount,
+                  Colors.green,
+                  Icons.check_circle_outline,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _summaryBox(String title, int count, Color color, IconData icon) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade100),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, size: 15, color: color),
+                const SizedBox(width: 4),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '$count',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildBurnoutCard() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
+
       child: Obx(() {
         final isGood = _c.burnoutLevel == BurnoutLevel.good;
+
         return BurnoutCard(
           title: _c.sprintLabel,
+
           statusLabel: isGood ? 'Good' : 'Poor',
+
           statusColor: isGood
               ? const Color(0xFF00C897)
               : const Color(0xFFFFA500),
+
           statusTextColor: Colors.white,
+
           message: _c.burnoutMessage,
+
           progress: _c.burnoutProgress,
+
           progressColor: isGood
               ? const Color(0xFF00C897)
               : const Color(0xFFFFA500),
+
           onTap: _c.goToBurnoutStats,
         );
       }),
     );
   }
 
-  //  Tab Bar
+  // ── Tab Bar ────────────────────────────────────────────────────────────
+
   Widget _buildTabBar() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
+
       child: Obx(
         () => TaskTabBar(
           selectedIndex: _c.selectedTabIndex.value,
+
           counts: [
             _c.toDoCount + _c.inProgressCount + _c.doneCount,
+
             _c.inProgressCount,
+
             _c.doneCount,
           ],
+
           onTabChanged: _c.selectTab,
         ),
       ),
     );
   }
 
-  //  Task list / empty state
+  // ── Task List ──────────────────────────────────────────────────────────
+
   Widget _buildTaskList() {
     return Obx(() {
       final tasks = _c.filteredTasks;
+
       if (tasks.isEmpty) {
         return const Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
+
           child: TaskEmptyState(),
         );
       }
+
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+
           children: [
             const Padding(
               padding: EdgeInsets.only(bottom: 12),
+
               child: Text(
                 'Today Task',
+
                 style: TextStyle(
                   fontSize: 15,
+
                   fontWeight: FontWeight.w700,
+
                   color: AppColors.textPrimary,
                 ),
               ),
             ),
+
             ...tasks.map(
               (t) => TaskCardWidget(task: t, onTap: () => _c.goToDetail(t)),
             ),
@@ -272,14 +305,19 @@ class TaskMenuScreen extends StatelessWidget {
     });
   }
 
-  //  Bottom create button
+  // ── Bottom Create Button ───────────────────────────────────────────────
+
   Widget _buildCreateButton() {
     return Container(
       color: Colors.white,
+
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+
       child: SizedBox(
         width: double.infinity,
+
         height: 52,
+
         child: CustomButton(text: 'Create Task', onPressed: _c.goToCreateTask),
       ),
     );

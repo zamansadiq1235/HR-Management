@@ -58,12 +58,6 @@ class AttendanceController extends GetxController {
       clockIn: '09:00 AM',
       clockOut: '05:00 PM',
     ),
-    const AttendanceModel(
-      date: '25 September 2024',
-      totalHours: '08:10:00 hrs',
-      clockIn: '09:00 AM',
-      clockOut: '05:10 PM',
-    ),
   ].obs;
 
   // ── Computed helpers

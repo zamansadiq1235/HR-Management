@@ -3,7 +3,7 @@ import 'package:get_storage/get_storage.dart';
 class StorageService {
   final _box = GetStorage();
 
-  // 🔥 Keys
+  //  Keys
   static const _onboardingKey = 'onboarding_done';
   static const _isLoggedInKey = 'is_logged_in';
   static const _rememberKey = 'remember_me';

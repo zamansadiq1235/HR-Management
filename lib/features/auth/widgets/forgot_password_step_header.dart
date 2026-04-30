@@ -22,15 +22,14 @@ class ForgotPasswordStepHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         /// Drag handle
-        Container(
-          width: 36.w,
-          height: 4.h,
-          decoration: BoxDecoration(
-            color: const Color(0xFFE5E7EB),
-            borderRadius: BorderRadius.circular(2.r),
-          ),
-        ),
-
+        // Container(
+        //   width: 36.w,
+        //   height: 4.h,
+        //   decoration: BoxDecoration(
+        //     color: const Color(0xFFE5E7EB),
+        //     borderRadius: BorderRadius.circular(2.r),
+        //   ),
+        // ),
         SizedBox(height: 22.h),
 
         /// Title

@@ -51,7 +51,12 @@ class NotificationScreen extends StatelessWidget {
               const Divider(height: 1, thickness: 1, color: Color(0xFFF1F1F1)),
           itemBuilder: (context, index) {
             final item = controller.notifications[index];
-            return NotificationTile(notification: item);
+            return NotificationTile(
+              notification: item,
+              onDelete: () {
+                controller.deletenotifi(index);
+              },
+            );
           },
         );
       }),

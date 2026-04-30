@@ -16,6 +16,8 @@ class CustomPhonefield extends StatelessWidget {
         Text('Phone Number', style: Theme.of(context).textTheme.bodyMedium),
         SizedBox(height: 5),
         IntlPhoneField(
+          disableLengthCheck: true,
+          keyboardType: TextInputType.phone,
           controller: controller.phoneController,
           decoration: InputDecoration(
             hintText: '820000 0000',

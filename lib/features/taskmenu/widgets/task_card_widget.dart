@@ -87,7 +87,7 @@ class TaskCardWidget extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            //  Progress bar ────────────────────────
+            //  Progress bar
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: LinearProgressIndicator(

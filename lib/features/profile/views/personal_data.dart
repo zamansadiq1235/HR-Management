@@ -2,13 +2,17 @@
 
 // ignore_for_file: deprecated_member_use
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hrmanagement/core/widgets/custom_button.dart';
 import 'package:hrmanagement/features/leave/widgets/leave_description_field.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/custom_textfield.dart';
 import '../controllers/profile_controller.dart';
+import '../widgets/form_card.dart';
 
 class PersonalDataScreen extends StatelessWidget {
   const PersonalDataScreen({super.key});
@@ -26,7 +30,7 @@ class PersonalDataScreen extends StatelessWidget {
         child: Column(
           children: [
             // ── Personal info card ───────────────
-            _FormCard(
+            FormCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -48,12 +52,16 @@ class PersonalDataScreen extends StatelessWidget {
                   // Avatar picker
                   Center(
                     child: GestureDetector(
-                      onTap: c.pickAvatar,
+                      onTap: () => _showPickerMenu(context, c),
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          Obx(
-                            () => Container(
+                          Obx(() {
+                            final path = (c.avatarPath.value?.isNotEmpty ?? false)
+                                ? c.avatarPath.value
+                                : c.profile.value.avatarPath;
+
+                            return Container(
                               width: 90,
                               height: 90,
                               decoration: BoxDecoration(
@@ -62,28 +70,17 @@ class PersonalDataScreen extends StatelessWidget {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(17),
-                                child:
-                                    (c.avatarPath.value ??
-                                            c.profile.value.avatarPath) !=
-                                        null
-                                    ? Image.asset(
-                                        c.avatarPath.value ??
-                                            c.profile.value.avatarPath!,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (_, _, _) =>
-                                            const Icon(
-                                              Icons.person_rounded,
-                                              color: AppColors.primary,
-                                              size: 46,
-                                            ),
-                                      )
+                                child: (path != null && path.isNotEmpty)
+                                    ? _buildImage(
+                                        path,
+                                      ) // Handles both File and Asset
                                     : Image.asset(
                                         'assets/images/Ellipse2.png',
                                         fit: BoxFit.cover,
                                       ),
                               ),
-                            ),
-                          ),
+                            );
+                          }),
                           Positioned(
                             top: -10,
                             right: -10,
@@ -162,10 +159,10 @@ class PersonalDataScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // Date of Birth
-                  _FieldLabel('Date of Birth'),
+                  FieldLabel('Date of Birth'),
                   const SizedBox(height: 8),
                   Obx(
-                    () => _DropdownTile(
+                    () => DropdownTile(
                       icon: Icons.calendar_month_rounded,
                       value: c.selectedDob.value,
                       onTap: () async {
@@ -208,10 +205,10 @@ class PersonalDataScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // Position
-                  _FieldLabel('Position'),
+                  FieldLabel('Position'),
                   const SizedBox(height: 8),
                   Obx(
-                    () => _SelectionTile(
+                    () => SelectionTile(
                       icon: Icons.work_outline_rounded,
                       value: c.selectedPosition.value,
                       options: c.positionOptions,
@@ -225,7 +222,7 @@ class PersonalDataScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             // ── Address card
-            _FormCard(
+            FormCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -245,10 +242,10 @@ class PersonalDataScreen extends StatelessWidget {
                   const SizedBox(height: 20),
 
                   // Country
-                  _FieldLabel('Country'),
+                  FieldLabel('Country'),
                   const SizedBox(height: 8),
                   Obx(
-                    () => _SelectionTile(
+                    () => SelectionTile(
                       icon: Icons.location_on_outlined,
                       value: c.selectedCountry.value,
                       options: c.countryOptions,
@@ -259,10 +256,10 @@ class PersonalDataScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // State
-                  _FieldLabel('State'),
+                  FieldLabel('State'),
                   const SizedBox(height: 8),
                   Obx(
-                    () => _SelectionTile(
+                    () => SelectionTile(
                       icon: Icons.location_on_outlined,
                       value: c.selectedState.value,
                       options: c.stateOptions,
@@ -273,10 +270,10 @@ class PersonalDataScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // City
-                  _FieldLabel('City'),
+                  FieldLabel('City'),
                   const SizedBox(height: 8),
                   Obx(
-                    () => _SelectionTile(
+                    () => SelectionTile(
                       icon: Icons.location_on_outlined,
                       value: c.selectedCity.value,
                       options: c.cityOptions,
@@ -287,7 +284,7 @@ class PersonalDataScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // Full Address
-                  _FieldLabel('Full Address'),
+                  FieldLabel('Full Address'),
                   const SizedBox(height: 8),
                   DescriptionField(controller: c.fullAddressCtrl, hint: ''),
                 ],
@@ -302,9 +299,11 @@ class PersonalDataScreen extends StatelessWidget {
         child: SizedBox(
           width: double.infinity,
           height: 52,
-          child: CustomButton(text: 'Update',
-           onPressed: () => c.showUpdateProfileConfirm(context),)
-       ),
+          child: CustomButton(
+            text: 'Update',
+            onPressed: () => c.showUpdateProfileConfirm(context),
+          ),
+        ),
       ),
     );
   }
@@ -339,191 +338,55 @@ class PersonalDataScreen extends StatelessWidget {
       ),
     );
   }
-}
 
-// ── Shared form widgets ──────────────────────────────────────
-
-class _FormCard extends StatelessWidget {
-  final Widget child;
-  const _FormCard({required this.child});
-
-  @override
-  Widget build(BuildContext context) => Container(
-    width: double.infinity,
-    padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(20),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.05),
-          blurRadius: 14,
-          offset: const Offset(0, 4),
-        ),
-      ],
-    ),
-    child: child,
-  );
-}
-
-class _FieldLabel extends StatelessWidget {
-  final String text;
-  const _FieldLabel(this.text);
-
-  @override
-  Widget build(BuildContext context) => Text(
-    text,
-    style: const TextStyle(
-      fontSize: 12.5,
-      fontWeight: FontWeight.w500,
-      color: AppColors.textSecondary,
-    ),
-  );
-}
-
-class _DropdownTile extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  final VoidCallback onTap;
-  const _DropdownTile({
-    required this.icon,
-    required this.value,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) => GestureDetector(
-    onTap: onTap,
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE8E8F0), width: 1.2),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: AppColors.primary, size: 18),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                fontSize: 13.5,
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ),
-          const Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: AppColors.textHint,
-            size: 20,
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-class _SelectionTile extends StatelessWidget {
-  final IconData icon;
-  final String value;
-  final List<String> options;
-  final void Function(String) onSelect;
-  final BuildContext context;
-
-  const _SelectionTile({
-    required this.icon,
-    required this.value,
-    required this.options,
-    required this.onSelect,
-    required this.context,
-  });
-
-  @override
-  Widget build(BuildContext ctx) => GestureDetector(
-    onTap: () => _showSheet(),
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE8E8F0), width: 1.2),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: AppColors.primary, size: 18),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                fontSize: 13.5,
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ),
-          const Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: AppColors.textHint,
-            size: 20,
-          ),
-        ],
-      ),
-    ),
-  );
-
-  void _showSheet() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => Container(
+  void _showPickerMenu(BuildContext context, ProfileController c) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.all(16),
         decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        child: Wrap(
           children: [
-            Center(
-              child: Container(
-                margin: const EdgeInsets.only(top: 12, bottom: 16),
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE0E0E0),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Photo Gallery'),
+              onTap: () {
+                c.pickAvatar(ImageSource.gallery);
+                Get.back();
+              },
             ),
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height * 0.5,
-              ),
-              child: ListView(
-                shrinkWrap: true,
-                children: options
-                    .map(
-                      (opt) => ListTile(
-                        title: Text(opt),
-                        trailing: opt == value
-                            ? const Icon(
-                                Icons.check_rounded,
-                                color: AppColors.primary,
-                              )
-                            : null,
-                        onTap: () {
-                          onSelect(opt);
-                          Navigator.pop(context);
-                        },
-                      ),
-                    )
-                    .toList(),
-              ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text('Camera'),
+              onTap: () {
+                c.pickAvatar(ImageSource.camera);
+                Get.back();
+              },
             ),
-            const SizedBox(height: 16),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildImage(String path) {
+    // If the path starts with 'assets/', treat it as an asset
+    if (path.startsWith('assets/')) {
+      return Image.asset(
+        path,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => const Icon(Icons.person),
+      );
+    }
+
+    // Otherwise, treat it as a file on the device
+    return Image.file(
+      File(path),
+      fit: BoxFit.cover,
+      errorBuilder: (_, __, ___) =>
+          const Icon(Icons.person_rounded, color: AppColors.primary, size: 46),
     );
   }
 }

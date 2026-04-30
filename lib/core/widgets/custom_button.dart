@@ -20,7 +20,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: width ?? double.infinity,
-      height: 56,
+      height: 52,
       child: isOutlined
           ? OutlinedButton(
               onPressed: onPressed,
@@ -31,7 +31,10 @@ class CustomButton extends StatelessWidget {
                 ),
                 foregroundColor: AppColors.primary,
               ),
-              child: Text(text, style: AppTextStyles.button.copyWith(color: AppColors.primary)),
+              child: Text(
+                text,
+                style: AppTextStyles.button.copyWith(color: AppColors.primary),
+              ),
             )
           : ElevatedButton(
               onPressed: onPressed,
