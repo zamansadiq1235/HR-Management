@@ -2,6 +2,7 @@
 
 // ignore_for_file: deprecated_member_use, unnecessary_underscores
 
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -169,7 +170,7 @@ class _SelfieClockInScreenState extends State<SelfieClockInScreen> {
 }
 
 //  Selfie image section ─────────────────────────────────────
-class _SelfieImageSection extends StatelessWidget {
+class _SelfieImageSection extends StatefulWidget {
   final String imagePath;
   final AttendanceController controller;
   final VoidCallback onRetake;
@@ -181,6 +182,49 @@ class _SelfieImageSection extends StatelessWidget {
   });
 
   @override
+  State<_SelfieImageSection> createState() => _SelfieImageSectionState();
+}
+
+class _SelfieImageSectionState extends State<_SelfieImageSection> {
+  late DateTime _currentDateTime;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentDateTime = DateTime.now();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      setState(() {
+        _currentDateTime = DateTime.now();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  String get _formattedDateTime {
+    final date = _currentDateTime;
+    final day = date.day.toString().padLeft(2, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    final year = date.year.toString().substring(2);
+    final hour = date.hour == 0 || date.hour == 12 ? 12 : date.hour % 12;
+    final minute = date.minute.toString().padLeft(2, '0');
+    final amPm = date.hour >= 12 ? 'PM' : 'AM';
+    final offset = date.timeZoneOffset;
+    final sign = offset.isNegative ? '-' : '+';
+    final offsetHours = offset.inHours.abs().toString().padLeft(2, '0');
+    final offsetMinutes = (offset.inMinutes.abs() % 60).toString().padLeft(
+      2,
+      '0',
+    );
+    return '$day/$month/$year ${hour.toString().padLeft(2, '0')}:$minute$amPm GMT $sign$offsetHours:$offsetMinutes';
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
@@ -189,7 +233,7 @@ class _SelfieImageSection extends StatelessWidget {
           width: double.infinity,
           height: 340,
           child: Image.file(
-            File(imagePath),
+            File(widget.imagePath),
             fit: BoxFit.cover,
             errorBuilder: (_, __, ___) => Container(
               color: const Color(0xFF2D2D3A),
@@ -209,9 +253,9 @@ class _SelfieImageSection extends StatelessWidget {
             () => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _GeoText('Lat : ${controller.userLat.value}'),
-                _GeoText('Long : ${controller.userLng.value}'),
-                _GeoText('11/10/24 09:00AM GMT +07:00'),
+                _GeoText('Lat : ${widget.controller.userLat.value}'),
+                _GeoText('Long : ${widget.controller.userLng.value}'),
+                _GeoText(_formattedDateTime),
               ],
             ),
           ),
@@ -228,7 +272,7 @@ class _SelfieImageSection extends StatelessWidget {
               width: double.infinity,
               height: 50,
               child: ElevatedButton.icon(
-                onPressed: onRetake,
+                onPressed: widget.onRetake,
                 icon: const Icon(Icons.refresh_rounded, size: 20),
                 label: const Text('Retake Photo'),
                 style: ElevatedButton.styleFrom(
