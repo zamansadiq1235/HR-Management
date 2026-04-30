@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'core/theme/app_theme.dart';
 import 'core/routes/app_pages.dart';
+import 'data/services/storage_services.dart';
 
 void main() async {
   // 1. Ensure Flutter bindings are initialized
@@ -18,11 +19,23 @@ void main() async {
     // Fallback or handle error so the app doesn't stay blank
   }
 
-  runApp(const HRManagementApp());
+  final storage = StorageService();
+  String initialRoute = AppPages.onboarding; // Default route
+
+  if (storage.isOnboardingDone && storage.isLoggedIn) {
+    initialRoute = AppPages.navBar;
+  } else if (storage.isOnboardingDone && !storage.isLoggedIn) {
+    initialRoute = AppPages.signIn;
+  }
+  // else: keep default onboarding route
+
+  runApp(HRManagementApp(initialRoute: initialRoute));
 }
 
 class HRManagementApp extends StatelessWidget {
-  const HRManagementApp({super.key});
+  final String initialRoute;
+
+  const HRManagementApp({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +46,7 @@ class HRManagementApp extends StatelessWidget {
       builder: (_, child) => GetMaterialApp(
         title: 'HR Management',
         theme: AppTheme.lightTheme,
-        initialRoute: AppPages.onboarding,
+        initialRoute: initialRoute,
         getPages: AppPages.routes,
         debugShowCheckedModeBanner: false,
       ),

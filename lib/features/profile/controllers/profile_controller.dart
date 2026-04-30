@@ -204,7 +204,8 @@ class ProfileController extends GetxController {
   void logout() {
     Get.defaultDialog(
       titlePadding: EdgeInsets.only(top: 12),
-      contentPadding: EdgeInsets.all(5),
+      contentPadding: EdgeInsets.all(10),
+
       title: "Logout",
       middleText: "Are you sure you want to log out?",
       textConfirm: "Yes",

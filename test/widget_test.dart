@@ -13,7 +13,9 @@ import 'package:hrmanagement/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const HRManagementApp());
+    await tester.pumpWidget(const HRManagementApp(
+      initialRoute: '/',
+    ));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
