@@ -58,21 +58,27 @@ class NotificationScreen extends StatelessWidget {
         () => ListView.builder(
           itemCount: controller.notifications.length,
           itemBuilder: (context, index) {
-            return NotificationTile(
-              notification: controller.notifications[index],
-              isSelected: controller.selectedIndices.contains(index),
-              isSelectionMode: controller.isSelectionMode.value,
-              onDelete: () => controller.deletenotifi(index),
-              onLongPress: () => controller.toggleSelection(index),
-              onTap: () {
-                if (controller.isSelectionMode.value) {
-                  controller.toggleSelection(index);
-                }
-              },
-            );
+            // This Obx is critical for the "Immediate" update
+            return Obx(() {
+              final isSelected = controller.selectedIndices.contains(index);
+
+              return NotificationTile(
+                notification: controller.notifications[index],
+                isSelected: isSelected,
+                isSelectionMode: controller.isSelectionMode.value,
+                onDelete: () => controller.deletenotifi(index),
+                onLongPress: () => controller.toggleSelection(index),
+                onTap: () {
+                  if (controller.isSelectionMode.value) {
+                    controller.toggleSelection(index);
+                  }
+                },
+              );
+            });
           },
         ),
       ),
+
       // Delete Button appears only when items are selected
     );
   }

@@ -39,8 +39,9 @@ class NotificationController extends GetxController {
       selectedIndices.add(index);
       isSelectionMode.value = true;
     }
+    // Forces the Obx to see the change in the Set
+    selectedIndices.refresh(); 
   }
-
   void clearSelection() {
     selectedIndices.clear();
     isSelectionMode.value = false;

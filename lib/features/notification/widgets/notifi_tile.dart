@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: deprecated_member_use
 
+import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../models/notifi_model.dart';
 
@@ -26,9 +27,12 @@ class NotificationTile extends StatelessWidget {
     return GestureDetector(
       onLongPress: onLongPress,
       onTap: onTap,
+      // Using a behavior to ensure the whole area (including whitespace) is tappable
+      behavior: HitTestBehavior.opaque,
       child: Dismissible(
+        // IMPORTANT: The key should ideally be notification.id or similar unique value
         key: ObjectKey(notification),
-        // Disable swipe if we are selecting
+        // Disable swipe-to-delete when in selection mode to avoid gesture conflict
         direction: isSelectionMode ? DismissDirection.none : DismissDirection.endToStart,
         onDismissed: (_) => onDelete(),
         background: Container(
@@ -37,35 +41,54 @@ class NotificationTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: const Icon(Icons.delete_outline, color: Colors.white, size: 28),
         ),
-        child: Container(
-          color: isSelected ? AppColors.primary.withOpacity(0.1) : Colors.white,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          // Background color changes immediately when isSelected changes
+          color: isSelected 
+              ? AppColors.primary.withOpacity(0.12) 
+              : Colors.white,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Icon Container with Selection Overlay
               Stack(
+                alignment: Alignment.center,
                 children: [
                   Container(
-                    height: 70, width: 60,
+                    height: 70,
+                    width: 60,
                     decoration: BoxDecoration(
                       color: const Color(0xFFF5F6FF),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.description_outlined, size: 33, color: Color(0xFF7B61FF)),
+                    child: const Icon(
+                      Icons.description_outlined,
+                      size: 33,
+                      color: Color(0xFF7B61FF),
+                    ),
                   ),
+                  // The "Immediate" selection checkmark
                   if (isSelected)
-                    Container(
-                      height: 70, width: 60,
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 150),
+                      height: 70,
+                      width: 60,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.7),
+                        color: AppColors.primary.withOpacity(0.8),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.check, color: Colors.white, size: 30),
+                      child: const Icon(
+                        Icons.check_rounded,
+                        color: Colors.white,
+                        size: 32,
+                      ),
                     ),
                 ],
               ),
               const SizedBox(width: 16),
+              // Text Content
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,12 +96,36 @@ class NotificationTile extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(child: Text(notification.title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700))),
-                        Text(notification.time, style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                        Expanded(
+                          child: Text(
+                            notification.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF1E212C),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          notification.time,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 6),
-                    Text(notification.subtitle, style: TextStyle(fontSize: 13, color: AppColors.textSecondary, height: 1.4)),
+                    Text(
+                      notification.subtitle,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textSecondary,
+                        height: 1.4,
+                      ),
+                    ),
                   ],
                 ),
               ),
